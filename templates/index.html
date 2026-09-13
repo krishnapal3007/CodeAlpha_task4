@@ -1,0 +1,3217 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MediRisk AI | Heart Disease Risk Assessment</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+<style>
+.lifestyle-profile { margin-top: 22px; padding: 22px; border: 1px solid rgba(150,110,255,.18); border-radius: 18px; background: rgba(20,25,45,.55); }
+.lifestyle-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px; }
+.lifestyle-grid > div { padding:14px; border:1px solid rgba(255,255,255,.08); border-radius:12px; background:rgba(255,255,255,.025); }
+.lifestyle-grid span { display:block; font-size:12px; opacity:.65; margin-bottom:5px; }
+.lifestyle-grid strong { font-size:15px; }
+.lifestyle-note { margin-top:14px; font-size:12px; opacity:.68; line-height:1.5; }
+.lifestyle-note i { margin-right:7px; }
+@media (max-width:700px) { .lifestyle-grid { grid-template-columns:1fr 1fr; } }
+</style>
+
+<style>
+/* =========================================================
+   FINAL SPACING POLISH
+   Keeps the existing MediRisk AI design intact while making
+   the desktop page feel more balanced vertically.
+========================================================= */
+
+.container {
+    padding-top: 18px;
+    padding-bottom: 34px;
+}
+
+.hero {
+    margin-bottom: 22px;
+}
+
+.dashboard {
+    align-items: start;
+    gap: 22px;
+}
+
+.card {
+    box-sizing: border-box;
+}
+
+.patient-card,
+.result-card {
+    align-self: start;
+}
+
+.patient-card {
+    padding-bottom: 20px;
+}
+
+.patient-card .card-header,
+.result-card .card-header {
+    margin-bottom: 18px;
+}
+
+.form-grid {
+    row-gap: 14px;
+    column-gap: 18px;
+}
+
+.input-group {
+    margin-bottom: 0;
+}
+
+.clinical-insights {
+    margin-top: 18px !important;
+}
+
+.lifestyle-profile {
+    margin-top: 18px !important;
+    padding: 20px !important;
+}
+
+.ai-assistant {
+    margin-top: 24px !important;
+}
+
+.disclaimer {
+    margin-top: 18px !important;
+}
+
+.footer {
+    margin-top: 20px;
+}
+
+/* Prevent the two dashboard cards from creating unnecessary
+   vertical stretching when one side has more content. */
+.dashboard > .card {
+    height: fit-content;
+}
+
+/* Slightly tighter mobile rhythm */
+@media (max-width: 900px) {
+    .container {
+        padding-top: 12px;
+        padding-bottom: 24px;
+    }
+
+    .hero {
+        margin-bottom: 18px;
+    }
+
+    .dashboard {
+        gap: 18px;
+    }
+
+    .ai-assistant {
+        margin-top: 20px !important;
+    }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   MEDIRISK AI — PREMIUM ASSESSMENT UI
+   Designed to visually match the professional home page.
+   Existing Flask/Jinja functionality remains unchanged.
+========================================================= */
+
+body {
+    background:
+        radial-gradient(circle at 15% 10%, rgba(124,58,237,.12), transparent 32%),
+        radial-gradient(circle at 85% 20%, rgba(236,72,153,.08), transparent 30%),
+        #070b18 !important;
+    color: #f8fafc !important;
+}
+
+.navbar {
+    position: sticky !important;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 16px 0 !important;
+    background: rgba(7,11,24,.82) !important;
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.nav-inner {
+    width: min(1200px, calc(100% - 50px));
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.premium-brand {
+    text-decoration: none !important;
+}
+
+.premium-brand .brand-text h1 {
+    color: #f8fafc !important;
+    margin: 0;
+    font-size: 19px;
+    letter-spacing: -.4px;
+}
+
+.premium-brand .brand-text h1 span {
+    background: linear-gradient(90deg,#8b5cf6,#ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.premium-brand .brand-text small {
+    color: #68758e;
+    font-size: 10px;
+}
+
+.premium-brand .brand-icon {
+    box-shadow: 0 0 25px rgba(236,72,153,.2);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.nav-home {
+    color: #aeb7ca !important;
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.nav-home:hover { color: #fff !important; }
+.nav-home i { margin-right: 6px; color: #a78bfa; }
+
+.premium-status {
+    padding: 9px 13px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.035);
+    border-radius: 999px;
+    color: #aeb7ca;
+    font-size: 11px;
+}
+
+.premium-status .status-dot {
+    box-shadow: 0 0 12px #42e695;
+}
+
+.container {
+    width: min(1200px, calc(100% - 50px)) !important;
+    padding-top: 42px !important;
+    padding-bottom: 70px !important;
+}
+
+.hero {
+    padding: 15px 0 30px !important;
+    margin-bottom: 18px !important;
+}
+
+.hero-content { max-width: 760px !important; }
+
+.hero-badge {
+    border: 1px solid rgba(167,139,250,.18) !important;
+    background: rgba(124,58,237,.07) !important;
+    box-shadow: 0 10px 35px rgba(124,58,237,.08);
+}
+
+.hero h2 {
+    font-size: clamp(45px, 5.5vw, 70px) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -3px !important;
+    margin-top: 20px !important;
+}
+
+.hero h2 span {
+    background: linear-gradient(90deg,#8b5cf6,#ec4899) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+.hero p {
+    max-width: 650px !important;
+    color: #8e9ab0 !important;
+    font-size: 15px !important;
+    line-height: 1.75 !important;
+}
+
+.dashboard {
+    grid-template-columns: minmax(0, 1.16fr) minmax(330px, .84fr) !important;
+    gap: 24px !important;
+}
+
+.card {
+    background: linear-gradient(145deg,rgba(17,24,39,.92),rgba(8,13,27,.92)) !important;
+    border: 1px solid rgba(148,163,184,.12) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 70px rgba(0,0,0,.24) !important;
+}
+
+.patient-card {
+    padding: 30px !important;
+}
+
+.card-header {
+    padding-bottom: 20px !important;
+    border-bottom: 1px solid rgba(255,255,255,.07) !important;
+}
+
+.card-header h2 {
+    font-size: 19px !important;
+}
+
+.card-header p {
+    color: #6f7c93 !important;
+}
+
+.header-icon {
+    background: linear-gradient(135deg,rgba(124,58,237,.18),rgba(236,72,153,.10)) !important;
+    border: 1px solid rgba(167,139,250,.18);
+}
+
+.input-group label {
+    color: #cbd5e1 !important;
+    font-size: 11px !important;
+    letter-spacing: .1px;
+}
+
+.input-group input,
+.input-group select {
+    min-height: 49px !important;
+    background: rgba(2,6,23,.68) !important;
+    border: 1px solid rgba(148,163,184,.13) !important;
+    border-radius: 13px !important;
+    color: #f8fafc !important;
+}
+
+.input-group input:hover,
+.input-group select:hover {
+    border-color: rgba(139,92,246,.35) !important;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: rgba(139,92,246,.7) !important;
+    box-shadow: 0 0 0 4px rgba(139,92,246,.08) !important;
+}
+
+.predict-btn {
+    min-height: 56px !important;
+    border-radius: 14px !important;
+    background: linear-gradient(135deg,#7c3aed,#db2777) !important;
+    box-shadow: 0 14px 35px rgba(124,58,237,.25) !important;
+}
+
+.predict-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 45px rgba(124,58,237,.38) !important;
+}
+
+.result-card {
+    position: sticky !important;
+    top: 88px;
+}
+
+.result-card .card-header {
+    border-bottom-color: rgba(255,255,255,.07) !important;
+}
+
+.clinical-insights {
+    margin-top: 22px !important;
+    padding: 24px !important;
+    border-radius: 20px !important;
+    background: rgba(255,255,255,.025) !important;
+    border: 1px solid rgba(255,255,255,.07) !important;
+}
+
+.insight-step {
+    padding: 15px !important;
+    border-radius: 14px !important;
+    background: rgba(255,255,255,.025) !important;
+    border: 1px solid rgba(255,255,255,.05) !important;
+}
+
+.step-number {
+    color: #a78bfa !important;
+}
+
+.ai-assistant {
+    border: 1px solid rgba(148,163,184,.10) !important;
+    border-radius: 22px !important;
+    box-shadow: 0 25px 70px rgba(0,0,0,.18);
+}
+
+.disclaimer {
+    border: 1px solid rgba(245,158,11,.12) !important;
+    background: rgba(245,158,11,.025) !important;
+    border-radius: 18px !important;
+}
+
+.footer {
+    border-top-color: rgba(255,255,255,.07) !important;
+}
+
+@media (max-width: 850px) {
+    .nav-inner { width: calc(100% - 28px); }
+    .nav-status { display: none !important; }
+    .container { width: calc(100% - 28px) !important; }
+    .dashboard { grid-template-columns: 1fr !important; }
+    .result-card { position: relative !important; top: auto; }
+}
+
+@media (max-width: 560px) {
+    .premium-brand .brand-text small { display: none; }
+    .hero h2 { font-size: 43px !important; }
+    .patient-card { padding: 20px !important; }
+    .form-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   HOMEPAGE-MATCHED HEADER + PROFESSIONAL ICON SYSTEM
+========================================================= */
+.navbar {
+    padding: 13px 0 !important;
+    background: rgba(4, 8, 22, .82) !important;
+    border-bottom: 1px solid rgba(139,92,246,.22) !important;
+    box-shadow: 0 8px 35px rgba(0,0,0,.18);
+}
+.nav-inner {
+    width: min(1320px, calc(100% - 44px));
+    min-height: 54px;
+}
+.premium-brand {
+    display:flex !important;
+    align-items:center;
+    gap:11px;
+}
+.premium-brand .brand-icon {
+    width:42px !important;
+    height:42px !important;
+    border-radius:12px !important;
+    display:grid !important;
+    place-items:center;
+    background:linear-gradient(135deg,#7c3aed,#2563eb) !important;
+    border:1px solid rgba(255,255,255,.18) !important;
+    box-shadow:0 0 25px rgba(124,58,237,.38), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.premium-brand .brand-icon i { font-size:19px; color:#fff !important; }
+.premium-brand .brand-text h1 { font-size:19px !important; font-weight:800; }
+.premium-brand .brand-text small { display:block; margin-top:2px; }
+.main-nav {
+    display:flex; align-items:center; gap:5px;
+    margin-left:auto; margin-right:25px;
+}
+.main-nav-link {
+    position:relative; display:flex; align-items:center; gap:8px;
+    padding:11px 14px; border-radius:10px;
+    color:#8995ad !important; text-decoration:none !important;
+    font-size:12px; font-weight:600; transition:.25s ease;
+}
+.main-nav-link i { font-size:14px; color:#8b5cf6; }
+.main-nav-link:hover { color:#fff !important; background:rgba(124,58,237,.08); }
+.main-nav-link.active { color:#fff !important; background:rgba(124,58,237,.10); }
+.main-nav-link.active:after {
+    content:""; position:absolute; left:15px; right:15px; bottom:-14px; height:2px;
+    border-radius:5px; background:linear-gradient(90deg,#7c3aed,#ec4899);
+    box-shadow:0 0 12px rgba(168,85,247,.85);
+}
+.nav-actions { gap:11px !important; }
+.premium-status {
+    border:1px solid rgba(96,165,250,.16) !important;
+    background:rgba(15,23,42,.65) !important;
+    padding:8px 12px !important;
+    white-space:nowrap;
+}
+.profile-icon {
+    width:36px; height:36px; border-radius:50%; display:grid; place-items:center;
+    background:linear-gradient(135deg,#7c3aed,#2563eb);
+    color:#fff; border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 0 18px rgba(124,58,237,.35);
+}
+.profile-icon i { font-size:14px; }
+
+/* Professional section icons */
+.header-icon {
+    width:46px !important; height:46px !important;
+    min-width:46px; border-radius:14px !important;
+    display:grid !important; place-items:center;
+    background:linear-gradient(135deg,rgba(124,58,237,.24),rgba(37,99,235,.13)) !important;
+    border:1px solid rgba(139,92,246,.28) !important;
+    box-shadow:0 0 22px rgba(124,58,237,.14), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.header-icon i {
+    color:#c4b5fd !important; font-size:18px;
+    filter:drop-shadow(0 0 7px rgba(167,139,250,.45));
+}
+.input-group label i, .input-label i {
+    color:#a78bfa !important; margin-right:6px;
+}
+.input-group input:focus, .input-group select:focus {
+    border-color:rgba(139,92,246,.75) !important;
+    box-shadow:0 0 0 3px rgba(124,58,237,.10), 0 0 18px rgba(124,58,237,.08) !important;
+}
+
+@media(max-width:900px){
+    .main-nav { display:none; }
+    .nav-inner { width:min(100% - 28px, 1320px); }
+    .premium-brand .brand-text small { display:none; }
+    .premium-status { display:none; }
+}
+</style>
+
+
+<style>
+/* ====== PIXEL-STYLE MEDIRISK ASSESSMENT UI ====== */
+:root{
+  --bg:#030817;--panel:rgba(8,16,43,.78);--panel2:rgba(10,20,52,.92);
+  --line:rgba(92,123,255,.30);--purple:#8b5cf6;--blue:#3b82f6;--cyan:#38bdf8;
+  --text:#f5f7ff;--muted:#98a7c7;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:
+ radial-gradient(circle at 78% 18%,rgba(81,38,196,.20),transparent 25%),
+ radial-gradient(circle at 95% 78%,rgba(72,33,210,.20),transparent 26%),
+ linear-gradient(135deg,#020713 0%,#06112d 52%,#030817 100%);
+ color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden;
+}
+body:before,body:after{content:"";position:fixed;pointer-events:none;z-index:-1;border-radius:50%;filter:blur(2px)}
+body:before{width:480px;height:480px;left:-330px;top:250px;background:radial-gradient(circle,rgba(83,45,226,.30),transparent 68%)}
+body:after{width:500px;height:500px;right:-320px;bottom:-150px;background:radial-gradient(circle,rgba(124,58,237,.30),transparent 68%)}
+.navbar{height:76px!important;background:rgba(3,8,24,.82)!important;border-bottom:1px solid rgba(110,91,255,.30)!important;box-shadow:0 10px 40px rgba(0,0,0,.30),0 0 28px rgba(94,65,255,.10);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50}
+.navbar:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,#693cff,#c56cff,#3478ff,transparent);opacity:.75}
+.nav-inner{max-width:1380px!important;height:76px!important;margin:auto!important;padding:0 28px!important;display:flex!important;align-items:center!important}
+.nav-brand{gap:12px!important;text-decoration:none}
+.brand-icon{width:42px!important;height:42px!important;border-radius:12px!important;display:grid!important;place-items:center!important;background:linear-gradient(145deg,#8b5cf6,#4f46e5)!important;box-shadow:0 0 25px rgba(124,58,237,.55),inset 0 1px 0 rgba(255,255,255,.28)!important;color:#fff!important;font-size:19px!important}
+.brand-text h1{margin:0!important;font-size:20px!important;font-weight:800!important;letter-spacing:-.4px}.brand-text h1 span{color:#9d7cff}.brand-text small{color:#8190b3!important;font-size:10px!important}
+.main-nav{display:flex!important;gap:7px!important;margin-left:auto!important;margin-right:auto!important;height:100%!important;align-items:center!important}
+.main-nav-link{height:100%!important;padding:0 19px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#9cabc9!important;text-decoration:none!important;font-size:13px!important;position:relative!important;transition:.25s!important}
+.main-nav-link:hover,.main-nav-link.active{color:#fff!important}.main-nav-link.active:after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:3px;border-radius:4px 4px 0 0;background:linear-gradient(90deg,#7c3aed,#c084fc,#3b82f6);box-shadow:0 0 14px #8b5cf6}.main-nav-link i{font-size:16px;color:#a98cff}
+.nav-actions{display:flex!important;align-items:center!important;gap:13px!important}.premium-status{border:1px solid rgba(74,222,128,.25)!important;background:rgba(12,36,35,.45)!important;padding:8px 13px!important;border-radius:999px!important;color:#b8c5df!important;font-size:11px!important}.status-dot{width:8px!important;height:8px!important;background:#22e58b!important;box-shadow:0 0 10px #22e58b!important}.profile-icon{width:34px!important;height:34px!important;border-radius:50%!important;background:linear-gradient(145deg,#8b5cf6,#2563eb)!important;display:grid!important;place-items:center!important;box-shadow:0 0 18px rgba(99,102,241,.4)!important}
+.container{max-width:1380px!important;margin:0 auto!important;padding:30px 28px 70px!important}
+.hero{position:relative!important;margin:0 0 25px!important;min-height:205px!important;display:flex!important;align-items:center!important;padding:8px 25px!important;overflow:hidden!important;background:transparent!important;border:0!important}
+.hero-content{max-width:690px!important;position:relative;z-index:2}.hero-badge{display:inline-flex!important;align-items:center!important;gap:8px!important;padding:7px 13px!important;border:1px solid rgba(173,111,255,.55)!important;background:rgba(72,38,128,.15)!important;color:#d7c5ff!important;border-radius:999px!important;font-size:11px!important;box-shadow:0 0 22px rgba(124,58,237,.13)!important}.hero h2{font-size:43px!important;line-height:1.05!important;letter-spacing:-1.7px!important;margin:17px 0 11px!important;font-weight:850!important}.hero h2 span{display:block!important;background:linear-gradient(90deg,#a855f7,#8b5cf6 40%,#3b82f6 95%);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{max-width:650px!important;color:#9eaccb!important;font-size:14px!important;line-height:1.75!important;margin:0!important}
+.hero:after{content:"";position:absolute;right:80px;top:2px;width:245px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.24),rgba(37,99,235,.10) 40%,transparent 70%);filter:blur(3px)}
+.hero:before{content:"♥";position:absolute;right:125px;top:15px;width:145px;height:145px;border:1px solid rgba(111,104,255,.35);border-radius:50%;display:grid;place-items:center;color:#d3b5ff;font-size:72px;text-shadow:0 0 18px #a855f7,0 0 45px #6d28d9;box-shadow:0 0 30px rgba(139,92,246,.2),inset 0 0 35px rgba(59,130,246,.12);transform:rotate(-4deg)}
+.dashboard{display:grid!important;grid-template-columns:minmax(0,1.72fr) minmax(330px,.88fr)!important;gap:22px!important;align-items:start!important}
+.card{background:linear-gradient(145deg,rgba(8,17,44,.90),rgba(5,12,31,.86))!important;border:1px solid rgba(78,112,229,.35)!important;border-radius:18px!important;box-shadow:0 18px 50px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.035),0 0 30px rgba(37,99,235,.045)!important;backdrop-filter:blur(18px)!important}
+.patient-card{grid-column:1;padding:20px!important}.result-card,.empty-result{grid-column:2;padding:22px!important;margin:0!important}.card-header{display:flex!important;align-items:center!important;gap:13px!important;padding:15px!important;border:1px solid rgba(83,93,201,.28)!important;background:linear-gradient(100deg,rgba(40,39,110,.28),rgba(10,24,57,.28))!important;border-radius:14px!important}.card-header h2{font-size:15px!important;margin:0 0 4px!important}.card-header p{font-size:11px!important;color:#8392b4!important;margin:0!important}.header-icon,.clinical-icon,.empty-icon{width:43px!important;height:43px!important;min-width:43px!important;border-radius:13px!important;display:grid!important;place-items:center!important;background:linear-gradient(145deg,rgba(139,92,246,.45),rgba(37,99,235,.30))!important;border:1px solid rgba(148,110,255,.45)!important;box-shadow:0 0 20px rgba(124,58,237,.25)!important;color:#c9b5ff!important}
+.form-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:17px 22px!important;margin-top:20px!important}.input-group label{font-size:11px!important;color:#c3cce2!important;margin-bottom:7px!important;display:flex!important;gap:8px!important;align-items:center!important}.input-group label i{color:#a87cff!important;width:14px!important;text-align:center!important}.input-group input,.input-group select{width:100%!important;height:39px!important;border-radius:10px!important;border:1px solid rgba(71,106,210,.50)!important;background:rgba(4,14,36,.72)!important;color:#e9edff!important;padding:0 13px!important;outline:none!important;font-size:11px!important;box-shadow:inset 0 1px 7px rgba(0,0,0,.20)!important;transition:.2s!important}.input-group input::placeholder{color:#536483!important}.input-group input:focus,.input-group select:focus{border-color:#8b5cf6!important;box-shadow:0 0 0 3px rgba(139,92,246,.10),0 0 18px rgba(99,102,241,.12)!important}.input-group select option{background:#0a1532;color:#fff}
+.predict-btn{width:100%!important;margin-top:23px!important;height:47px!important;border:0!important;border-radius:11px!important;background:linear-gradient(90deg,#7c3aed,#8b5cf6 45%,#3b82f6)!important;color:white!important;font-weight:750!important;font-size:13px!important;box-shadow:0 10px 30px rgba(99,52,210,.35),inset 0 1px 0 rgba(255,255,255,.2)!important;cursor:pointer!important}.predict-btn:hover{transform:translateY(-1px);filter:brightness(1.07)}
+.clinical-insights{grid-column:2!important;grid-row:2!important;background:linear-gradient(145deg,rgba(8,17,44,.90),rgba(5,12,31,.86))!important;border:1px solid rgba(78,112,229,.35)!important;border-radius:18px!important;padding:18px!important;box-shadow:0 18px 50px rgba(0,0,0,.25)!important}.clinical-insights-header{display:flex!important;gap:11px!important;align-items:center!important;margin-bottom:14px!important}.clinical-insights-header h3{font-size:14px!important;margin:0 0 3px!important}.clinical-insights-header p{font-size:10px!important;color:#8090b4!important;margin:0!important}.insight-steps{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important}.insight-step{display:flex!important;gap:9px!important;padding:11px!important;border:1px solid rgba(83,108,194,.25)!important;background:rgba(12,25,58,.46)!important;border-radius:11px!important}.step-number{font-size:9px!important;color:#a98cff!important;font-weight:800!important}.step-content strong{display:block!important;font-size:10px!important}.step-content span{display:block!important;color:#7787aa!important;font-size:9px!important;line-height:1.4!important;margin-top:3px!important}.insight-footer{font-size:9px!important;color:#7585a7!important;margin-top:12px!important;display:flex!important;gap:7px!important;align-items:center!important}
+.empty-result{min-height:300px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important}.empty-result .empty-icon{width:58px!important;height:58px!important;border-radius:50%!important;font-size:23px!important;margin-bottom:14px!important}.empty-result h2{font-size:19px!important;margin:0 0 8px!important}.empty-result p{font-size:11px!important;line-height:1.65!important;color:#7e8eaf!important;max-width:280px!important}.empty-features{width:100%!important;margin-top:15px!important;display:grid!important;gap:8px!important}.empty-features div{display:flex!important;align-items:center!important;gap:10px!important;padding:9px 11px!important;border:1px solid rgba(71,101,190,.25)!important;background:rgba(10,23,53,.45)!important;border-radius:9px!important;color:#aebbd5!important;font-size:10px!important;text-align:left!important}.empty-features i{color:#9f7aea!important;width:16px!important}
+.risk-section{display:flex!important;justify-content:center!important;align-items:center!important;padding:22px 0!important}.risk-circle{width:160px!important;height:160px!important}.risk-circle-inner strong{font-size:30px!important}.patient-name{background:rgba(20,33,69,.55)!important;border:1px solid rgba(72,99,185,.25)!important;border-radius:10px!important;padding:10px 12px!important}.ai-assistant{margin-top:22px!important}.assistant-box{background:rgba(4,12,29,.55)!important;border:1px solid rgba(71,101,190,.22)!important;border-radius:12px!important}.chat-history{max-height:260px!important}
+@media(max-width:1050px){.dashboard{grid-template-columns:1fr!important}.patient-card,.result-card,.empty-result,.clinical-insights{grid-column:1!important;grid-row:auto!important}.clinical-insights{margin-top:0!important}.hero:before,.hero:after{right:20px}.main-nav{display:none!important}}
+@media(max-width:700px){.container{padding:20px 14px 50px!important}.hero{min-height:190px!important;padding:5px 4px!important}.hero h2{font-size:32px!important}.hero:before{display:none}.form-grid{grid-template-columns:1fr!important}.insight-steps{grid-template-columns:1fr!important}.nav-actions .premium-status{display:none!important}.nav-inner{padding:0 15px!important}.brand-text small{display:none!important}}
+</style>
+
+
+<style>
+/* =========================================================
+   MEDIRISK AI — REFERENCE SCREEN MATCH
+   Visual layer only. Flask/Jinja fields and JS remain untouched.
+========================================================= */
+:root{
+  --ref-bg:#030914;
+  --ref-panel:rgba(7,19,53,.78);
+  --ref-border:rgba(53,105,235,.55);
+  --ref-purple:#a855f7;
+  --ref-blue:#2f7bff;
+  --ref-text:#f4f7ff;
+  --ref-muted:#8ea0c4;
+}
+html,body{background:#030914!important;color:var(--ref-text)!important;}
+body{overflow-x:hidden!important;}
+body:before{content:"";position:fixed;inset:0;z-index:-3;background:
+ radial-gradient(700px 360px at 0% 4%,rgba(80,35,255,.30),transparent 62%),
+ radial-gradient(620px 420px at 100% 12%,rgba(157,38,255,.22),transparent 60%),
+ radial-gradient(700px 520px at 100% 95%,rgba(55,32,255,.20),transparent 62%),
+ linear-gradient(180deg,#030713 0%,#020915 52%,#030814 100%);}
+body:after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.45;background-image:radial-gradient(circle at 20% 30%,rgba(90,140,255,.5) 0 1px,transparent 2px),radial-gradient(circle at 75% 18%,rgba(180,100,255,.45) 0 1px,transparent 2px),radial-gradient(circle at 88% 60%,rgba(70,150,255,.4) 0 1px,transparent 2px);background-size:280px 240px,360px 320px,420px 380px;animation:particles 16s linear infinite;}
+@keyframes particles{from{transform:translateY(0)}to{transform:translateY(-35px)}}
+.navbar{height:69px!important;padding:0 5.8%!important;background:rgba(5,8,30,.84)!important;border-bottom:1px solid rgba(81,71,255,.50)!important;box-shadow:0 0 35px rgba(81,71,255,.10)!important;backdrop-filter:blur(18px)!important;}
+.nav-inner{max-width:1400px!important;height:69px!important;margin:auto!important;}
+.main-nav{gap:5px!important;}
+.main-nav-link{height:69px!important;padding:0 19px!important;font-size:13px!important;color:#b7c2dc!important;}
+.main-nav-link.active{color:#fff!important;background:linear-gradient(180deg,rgba(92,54,255,.05),rgba(92,54,255,.25))!important;border-bottom:2px solid #7c5cff!important;box-shadow:0 7px 28px rgba(129,74,255,.24)!important;}
+.nav-status{border:1px solid rgba(61,104,199,.35)!important;background:rgba(7,22,49,.7)!important;}
+.container{width:min(1380px,calc(100% - 70px))!important;max-width:none!important;padding-top:30px!important;padding-bottom:45px!important;}
+.hero{position:relative!important;min-height:210px!important;margin:0 0 17px!important;padding:10px 26px 12px!important;display:grid!important;grid-template-columns:minmax(470px,1.1fr) minmax(430px,1fr) 310px!important;align-items:center!important;gap:18px!important;overflow:hidden!important;background:transparent!important;border:0!important;}
+.hero:before,.hero:after{display:none!important;}
+.hero-content{max-width:560px!important;position:relative!important;z-index:4!important;}
+.hero-badge{font-size:11px!important;padding:6px 12px!important;border:1px solid rgba(168,85,247,.70)!important;background:rgba(76,30,120,.18)!important;box-shadow:0 0 22px rgba(124,58,237,.16)!important;color:#d9c8ff!important;}
+.hero h2{font-size:46px!important;line-height:1.05!important;letter-spacing:-2.3px!important;margin:15px 0 10px!important;font-weight:850!important;}
+.hero h2 span{display:block!important;background:linear-gradient(90deg,#a855f7 0%,#b06cff 38%,#3d9cff 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;}
+.hero p{max-width:540px!important;margin:0!important;font-size:13px!important;line-height:1.7!important;color:#9eacce!important;}
+.hero-benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-self:center;z-index:4;margin-top:15px;}
+.benefit-item{text-align:center;min-width:82px;color:#cbd6ef;font-size:10px;}
+.benefit-icon{width:42px;height:42px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;color:#a98cff;border:1px solid rgba(112,83,255,.42);background:radial-gradient(circle at 35% 30%,rgba(117,72,255,.22),rgba(8,19,50,.72));box-shadow:0 0 18px rgba(108,71,255,.16),inset 0 0 15px rgba(46,116,255,.08);font-size:17px;}
+.benefit-item strong{display:block;font-size:11px;color:#e8edfb;margin-bottom:4px}.benefit-item span{display:block;color:#7f90b4;font-size:9px;}
+.hero-heart{position:relative;width:300px;height:190px;justify-self:end;z-index:2;display:grid;place-items:center;}
+.hero-heart:before{content:"";position:absolute;width:190px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(150,62,255,.38),rgba(34,100,255,.17) 42%,transparent 72%);filter:blur(8px);animation:heartGlow 2.2s ease-in-out infinite;}
+.heart-core{position:relative;width:112px;height:112px;display:grid;place-items:center;z-index:3;transform:rotate(-4deg);animation:heartBeat 1.65s ease-in-out infinite;}
+.heart-core:before{content:"";position:absolute;inset:7px;background:linear-gradient(145deg,#d59cff 0%,#9857ff 38%,#337cff 100%);clip-path:path("M56 103 C49 96 8 67 8 34 C8 10 39 3 56 23 C73 3 104 10 104 34 C104 67 63 96 56 103Z");filter:drop-shadow(0 0 12px rgba(184,96,255,.95)) drop-shadow(0 0 35px rgba(75,105,255,.7));}
+.heart-core i{position:relative;z-index:5;color:#f4ecff;font-size:68px;text-shadow:0 0 13px #fff,0 0 28px #b866ff,0 0 42px #4b8cff;}
+.orbit{position:absolute;border:1px solid rgba(87,118,255,.34);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-10deg);pointer-events:none;}
+.orbit-a{width:220px;height:116px;animation:orbitA 6s linear infinite}.orbit-b{width:265px;height:145px;border-color:rgba(173,82,255,.25);animation:orbitB 8s linear infinite}.orbit-c{width:195px;height:165px;border-color:rgba(69,140,255,.23);animation:orbitC 7s linear infinite}
+.orbit:after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:#67a4ff;box-shadow:0 0 12px #67a4ff;right:7%;top:9%;}
+@keyframes heartBeat{0%,100%{transform:rotate(-4deg) scale(1)}12%{transform:rotate(-4deg) scale(1.08)}23%{transform:rotate(-4deg) scale(.98)}35%{transform:rotate(-4deg) scale(1.045)}50%{transform:rotate(-4deg) scale(1)}}
+@keyframes heartGlow{0%,100%{opacity:.65;transform:scale(.95)}50%{opacity:1;transform:scale(1.12)}}
+@keyframes orbitA{to{transform:translate(-50%,-50%) rotate(350deg)}}@keyframes orbitB{to{transform:translate(-50%,-50%) rotate(-370deg)}}@keyframes orbitC{to{transform:translate(-50%,-50%) rotate(350deg)}}
+.dashboard{display:grid!important;grid-template-columns:minmax(0,1.78fr) minmax(380px,.98fr)!important;grid-template-rows:auto auto auto!important;gap:12px 20px!important;align-items:start!important;}
+.card,.clinical-insights,.ai-assistant{background:linear-gradient(145deg,rgba(8,22,57,.88),rgba(3,12,34,.92))!important;border:1px solid rgba(46,102,232,.62)!important;border-radius:16px!important;box-shadow:0 15px 45px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.025)!important;}
+.patient-card{grid-column:1;grid-row:1 / span 3;padding:16px 22px 18px!important;}
+.patient-card .card-header{padding:11px 13px!important;margin-bottom:14px!important;background:linear-gradient(90deg,rgba(26,34,110,.50),rgba(10,26,66,.45))!important;border:1px solid rgba(75,82,193,.32)!important;border-radius:12px!important;}
+.card-header h2{font-size:14px!important}.card-header p{font-size:10px!important;color:#8495ba!important}.header-icon{width:42px!important;height:42px!important;min-width:42px!important;border-radius:50%!important;background:linear-gradient(145deg,rgba(154,80,255,.55),rgba(37,99,235,.45))!important;border:1px solid rgba(161,111,255,.60)!important;box-shadow:0 0 22px rgba(126,71,255,.28)!important;}
+.form-grid{gap:14px 22px!important;}
+.input-group label{font-size:10px!important;color:#cbd8f0!important;margin-bottom:7px!important;}.input-group label i{color:#c16cff!important;margin-right:5px!important}.input-group input,.input-group select{height:38px!important;min-height:38px!important;padding:0 12px!important;background:rgba(2,10,29,.70)!important;border:1px solid rgba(50,101,211,.58)!important;border-radius:10px!important;font-size:10px!important;box-shadow:inset 0 0 18px rgba(28,60,145,.06)!important;}.input-group input:focus,.input-group select:focus{border-color:#7b5cff!important;box-shadow:0 0 0 3px rgba(123,92,255,.10),0 0 18px rgba(81,80,255,.10)!important;}
+.section-divider{border-color:rgba(76,104,191,.25)!important;}
+.predict-btn{height:42px!important;min-height:42px!important;margin-top:14px!important;border-radius:10px!important;background:linear-gradient(90deg,#a447f5 0%,#6c42ff 52%,#2e9dff 100%)!important;box-shadow:0 10px 30px rgba(110,63,255,.30)!important;font-size:12px!important;}
+.predict-btn:hover{transform:translateY(-1px)!important;box-shadow:0 14px 35px rgba(110,63,255,.42)!important;}
+.empty-result,.result-card{grid-column:2;grid-row:1!important;margin:0!important;padding:17px!important;min-height:260px!important;position:relative!important;top:auto!important;}.empty-result .empty-icon{width:52px!important;height:52px!important;font-size:20px!important;margin-bottom:12px!important}.empty-result h2{font-size:17px!important}.empty-result p{font-size:10px!important;max-width:300px!important}.empty-features{gap:6px!important;margin-top:11px!important}.empty-features div{padding:7px 9px!important;font-size:9px!important;}
+.clinical-insights{grid-column:2!important;grid-row:2!important;margin:0!important;padding:15px!important;border-radius:16px!important;background:linear-gradient(145deg,rgba(8,20,54,.86),rgba(4,12,32,.92))!important;}.clinical-insights-header{margin-bottom:10px!important}.clinical-icon{width:39px!important;height:39px!important;min-width:39px!important}.clinical-insights-header h3{font-size:13px!important}.clinical-insights-header p{font-size:9px!important}.insight-steps{gap:7px!important}.insight-step{padding:9px!important;min-height:58px!important;border-radius:10px!important;background:rgba(11,27,64,.50)!important;border:1px solid rgba(65,94,184,.30)!important}.step-number{font-size:9px!important}.step-content strong{font-size:9px!important}.step-content span{font-size:8px!important}.insight-footer{font-size:8px!important;margin-top:8px!important}
+.ai-assistant{grid-column:2!important;grid-row:3!important;margin:0!important;padding:14px!important;border-radius:16px!important}.ai-assistant .card-header{padding:0 0 9px!important;border:0!important;background:transparent!important}.ai-assistant .header-icon{width:38px!important;height:38px!important;min-width:38px!important}.ai-assistant .card-header h2{font-size:13px!important}.ai-assistant .card-header p{font-size:9px!important}.chat-history{max-height:100px!important;overflow:auto!important}.quick-questions{display:none!important}.assistant-input{margin-top:5px!important;display:grid!important;grid-template-columns:1fr 42px!important;gap:8px!important}.assistant-input input{height:40px!important;border-radius:10px!important;background:rgba(5,15,39,.85)!important;border:1px solid rgba(76,83,202,.42)!important;font-size:10px!important}.assistant-input button{height:40px!important;border-radius:10px!important;background:linear-gradient(135deg,#a343ff,#4b75ff)!important;box-shadow:0 0 20px rgba(117,64,255,.30)!important}
+.disclaimer{margin-top:14px!important;border-radius:12px!important;padding:10px 14px!important;font-size:9px!important;}
+@media(max-width:1150px){.hero{grid-template-columns:1fr 360px}.hero-benefits{display:none}.hero-heart{justify-self:center}.dashboard{grid-template-columns:minmax(0,1.45fr) minmax(320px,.9fr)!important}.container{width:min(1100px,calc(100% - 32px))!important}}
+@media(max-width:850px){.navbar{height:auto!important;padding:8px 18px!important}.nav-inner{height:auto!important}.main-nav{display:none!important}.container{width:calc(100% - 24px)!important}.hero{grid-template-columns:1fr;min-height:auto;padding:12px 8px 5px!important}.hero-heart{display:none}.dashboard{display:flex!important;flex-direction:column!important}.patient-card,.empty-result,.result-card,.clinical-insights,.ai-assistant{width:100%!important}.patient-card{order:1}.empty-result,.result-card{order:2}.clinical-insights{order:3}.ai-assistant{order:4}.form-grid{grid-template-columns:1fr!important}.hero h2{font-size:36px!important}}
+</style>
+
+<style id="managed-final-layout">
+/* ===== FINAL MANAGED FULL-WIDTH LAYOUT ===== */
+html,body{width:100%;min-height:100%;margin:0}
+body{
+  background:
+    radial-gradient(900px 500px at 12% 12%, rgba(83,38,220,.30), transparent 62%),
+    radial-gradient(700px 500px at 88% 10%, rgba(37,99,235,.22), transparent 60%),
+    radial-gradient(850px 650px at 94% 82%, rgba(123,45,220,.34), transparent 58%),
+    radial-gradient(650px 450px at 4% 78%, rgba(39,83,220,.20), transparent 60%),
+    linear-gradient(135deg,#020512 0%,#04102a 48%,#020716 100%) !important;
+  color:#f5f7ff !important;
+  overflow-x:hidden;
+}
+body:before{content:"";position:fixed;z-index:-2;inset:auto auto -180px -170px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(86,43,235,.42),transparent 68%);filter:blur(8px);pointer-events:none}
+body:after{content:"";position:fixed;z-index:-2;inset:-220px -180px auto auto;width:650px;height:650px;border-radius:50%;background:radial-gradient(circle,rgba(67,64,255,.30),transparent 67%);filter:blur(8px);pointer-events:none}
+
+.navbar{width:100%!important;height:72px!important;position:sticky!important;top:0!important}
+.nav-inner{width:100%!important;max-width:none!important;height:72px!important;margin:0!important;padding:0 5vw!important}
+.main-nav{gap:4px!important}
+.main-nav-link{padding:0 22px!important}
+
+.container{width:100%!important;max-width:none!important;margin:0!important;padding:28px 5vw 48px!important}
+
+.hero{
+  width:100%!important;min-height:225px!important;margin:0 0 18px!important;padding:8px 1.5vw 10px!important;
+  display:grid!important;grid-template-columns:minmax(480px,1.05fr) minmax(420px,.9fr) minmax(300px,.62fr)!important;
+  align-items:center!important;gap:24px!important;overflow:visible!important;
+}
+.hero-content{max-width:720px!important}
+.hero h2{font-size:52px!important;line-height:1.03!important;margin:16px 0 12px!important}
+.hero p{max-width:690px!important;font-size:14px!important}
+.hero-benefits{grid-template-columns:repeat(4,minmax(80px,1fr))!important;gap:13px!important;margin-top:18px!important}
+.benefit-item{font-size:11px!important}
+.benefit-icon{width:48px!important;height:48px!important;font-size:18px!important}
+.hero-heart{width:350px!important;height:215px!important;justify-self:end!important}
+.heart-core{width:132px!important;height:132px!important}
+.heart-core i{font-size:78px!important}
+.hero-heart:before{width:230px!important;height:145px!important}
+.orbit-a{width:250px!important;height:132px!important}.orbit-b{width:305px!important;height:170px!important}.orbit-c{width:225px!important;height:190px!important}
+
+/* Stronger holographic heart */
+.hero-heart:after{content:"";position:absolute;width:300px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(167,83,255,.20),rgba(42,109,255,.10) 40%,transparent 70%);filter:blur(15px);animation:heartAmbient 3s ease-in-out infinite;z-index:1}
+@keyframes heartAmbient{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1.08)}}
+
+.dashboard{width:100%!important;display:grid!important;grid-template-columns:minmax(0,1.72fr) minmax(410px,.88fr)!important;grid-template-rows:auto auto auto!important;gap:14px 22px!important;align-items:start!important}
+.patient-card{grid-column:1!important;grid-row:1 / span 3!important;padding:18px 24px 20px!important;width:100%!important}
+.empty-result,.result-card{grid-column:2!important;grid-row:1!important;width:100%!important}
+.clinical-insights{grid-column:2!important;grid-row:2!important;width:100%!important}
+.ai-assistant{grid-column:2!important;grid-row:3!important;width:100%!important}
+
+.card,.clinical-insights,.ai-assistant{background:linear-gradient(145deg,rgba(8,20,56,.94),rgba(3,10,30,.94))!important;border:1px solid rgba(67,110,242,.62)!important;box-shadow:0 20px 55px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.045),0 0 35px rgba(56,93,255,.08)!important;backdrop-filter:blur(18px)!important}
+.card-header{background:linear-gradient(90deg,rgba(37,39,125,.48),rgba(8,25,67,.38))!important}
+
+.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px 24px!important;margin-top:18px!important}
+.input-group input,.input-group select{height:42px!important;font-size:12px!important}
+.input-group label{font-size:11px!important}
+.predict-btn{height:48px!important;font-size:13px!important;margin-top:18px!important}
+
+.empty-result{min-height:285px!important}
+.clinical-insights{padding:17px!important}
+.ai-assistant{padding:16px!important}
+.disclaimer{width:100%!important;margin-top:15px!important}
+
+/* Floating background curves / particles */
+.container:before{content:"";position:fixed;z-index:-1;width:430px;height:430px;left:-280px;top:270px;border-radius:50%;background:linear-gradient(145deg,rgba(53,45,199,.42),rgba(42,79,255,.10));filter:blur(1px);transform:rotate(25deg);pointer-events:none}
+.container:after{content:"";position:fixed;z-index:-1;width:420px;height:420px;right:-280px;top:390px;border-radius:50%;background:linear-gradient(145deg,rgba(37,79,220,.30),rgba(126,46,255,.22));filter:blur(2px);pointer-events:none}
+
+@media (max-width:1250px){
+  .hero{grid-template-columns:minmax(430px,1fr) minmax(330px,.8fr)!important}
+  .hero-heart{justify-self:end!important}.hero-benefits{display:none!important}
+  .dashboard{grid-template-columns:minmax(0,1.55fr) minmax(360px,.85fr)!important}
+}
+@media (max-width:900px){
+  .container{padding:22px 24px 45px!important}
+  .hero{grid-template-columns:1fr!important;min-height:auto!important;padding:8px 0 15px!important}
+  .hero-heart{display:none!important}.hero h2{font-size:42px!important}
+  .dashboard{grid-template-columns:1fr!important;display:grid!important}
+  .patient-card,.empty-result,.result-card,.clinical-insights,.ai-assistant{grid-column:1!important;grid-row:auto!important}
+}
+@media (max-width:600px){
+  .nav-inner{padding:0 15px!important}.brand-text small{display:none!important}.main-nav{display:none!important}
+  .container{padding:18px 14px 40px!important}.form-grid{grid-template-columns:1fr!important}.hero h2{font-size:34px!important}
+}
+</style>
+
+
+<style id="final-layout-fix">
+/* FINAL LAYOUT: patient + how-it-works LEFT, ready + LARGE AI RIGHT */
+html,body{background:#020817!important;}
+body:before{content:""!important;position:fixed!important;inset:0!important;z-index:-10!important;pointer-events:none!important;background:
+radial-gradient(900px 520px at 4% 8%,rgba(74,35,255,.34),transparent 62%),
+radial-gradient(800px 500px at 96% 10%,rgba(168,40,255,.28),transparent 60%),
+radial-gradient(850px 600px at 100% 92%,rgba(55,70,255,.24),transparent 62%),
+radial-gradient(600px 400px at 35% 70%,rgba(31,83,190,.12),transparent 70%),
+linear-gradient(180deg,#030817 0%,#020817 55%,#04091b 100%)!important;}
+body:after{content:""!important;position:fixed!important;inset:0!important;z-index:-9!important;pointer-events:none!important;background:radial-gradient(circle at 15% 30%,rgba(120,100,255,.22) 0 1px,transparent 2px),radial-gradient(circle at 80% 18%,rgba(80,150,255,.24) 0 1px,transparent 2px),radial-gradient(circle at 92% 75%,rgba(190,80,255,.22) 0 1px,transparent 2px)!important;background-size:240px 220px,310px 290px,360px 340px!important;animation:refParticles 18s linear infinite!important;}
+@keyframes refParticles{to{transform:translate3d(-20px,-45px,0)}}
+.container{width:min(1420px,calc(100% - 54px))!important;padding-top:24px!important;}
+.dashboard{display:grid!important;grid-template-columns:minmax(0,1.62fr) minmax(410px,.88fr)!important;grid-template-rows:auto auto!important;gap:18px 20px!important;align-items:start!important;}
+.patient-card{grid-column:1!important;grid-row:1!important;width:100%!important;}
+.empty-result,.result-card{grid-column:2!important;grid-row:1!important;width:100%!important;margin:0!important;}
+.clinical-insights{grid-column:1!important;grid-row:2!important;width:100%!important;margin:0!important;}
+.ai-assistant{grid-column:2!important;grid-row:2!important;width:100%!important;margin:0!important;min-height:430px!important;padding:20px!important;}
+.ai-assistant .card-header{padding:14px 14px 16px!important;}
+.ai-assistant .card-header .header-icon{width:48px!important;height:48px!important;min-width:48px!important;font-size:20px!important;}
+.ai-assistant .card-header h2{font-size:19px!important;}
+.ai-assistant .card-header p{font-size:11px!important;}
+.ai-assistant .assistant-box{height:335px!important;display:flex!important;flex-direction:column!important;padding:12px!important;}
+.ai-assistant .chat-history{flex:1!important;max-height:none!important;min-height:190px!important;overflow-y:auto!important;padding:10px!important;}
+.ai-assistant .chat-message{font-size:12px!important;margin-bottom:12px!important;}
+.ai-assistant .message-avatar{width:36px!important;height:36px!important;min-width:36px!important;}
+.ai-assistant .message-content{font-size:12px!important;line-height:1.55!important;}
+.ai-assistant .message-content p{font-size:12px!important;}
+.ai-assistant .quick-questions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;margin:8px 0!important;}
+.ai-assistant .quick-questions button{font-size:10px!important;padding:9px 8px!important;white-space:normal!important;}
+.ai-assistant .assistant-input{margin-top:8px!important;display:grid!important;grid-template-columns:1fr 52px!important;gap:8px!important;}
+.ai-assistant .assistant-input input{height:48px!important;font-size:12px!important;}
+.ai-assistant .assistant-input button{height:48px!important;width:52px!important;font-size:17px!important;}
+.clinical-insights{padding:20px!important;}
+.clinical-insights-header h3{font-size:17px!important;}
+.clinical-insights-header p{font-size:11px!important;}
+.insight-steps{grid-template-columns:repeat(3,1fr)!important;gap:12px!important;}
+.insight-step{min-height:105px!important;padding:13px!important;}
+
+/* Make the hero heart clearly visible + animated */
+.hero-heart{width:340px!important;height:220px!important;transform:scale(1.08)!important;}
+.heart-core{animation:heartBeat 1.45s ease-in-out infinite!important;}
+.heart-core:before{animation:heartShine 2.4s ease-in-out infinite!important;}
+@keyframes heartShine{0%,100%{filter:drop-shadow(0 0 12px rgba(184,96,255,.85)) drop-shadow(0 0 28px rgba(75,105,255,.55));}50%{filter:drop-shadow(0 0 24px rgba(214,125,255,1)) drop-shadow(0 0 55px rgba(75,105,255,.95));}}
+
+@media(max-width:1050px){
+.dashboard{grid-template-columns:1fr!important;grid-template-rows:auto!important;}
+.patient-card,.empty-result,.result-card,.clinical-insights,.ai-assistant{grid-column:1!important;grid-row:auto!important;}
+.ai-assistant{min-height:360px!important;}
+}
+@media(max-width:700px){
+.container{width:calc(100% - 24px)!important;padding:18px 0 40px!important;}
+.hero-heart{display:none!important;}
+.insight-steps{grid-template-columns:1fr!important;}
+.ai-assistant .quick-questions{grid-template-columns:1fr!important;}
+}
+</style>
+
+
+<style id="final-no-gap-layout">
+/* ===== FINAL MEDIRISK DASHBOARD LAYOUT ===== */
+html,body{background:#030817!important;color:#eef2ff!important}
+body{min-height:100vh!important;overflow-x:hidden!important;background:
+ radial-gradient(700px 420px at 8% 15%,rgba(91,45,210,.20),transparent 65%),
+ radial-gradient(620px 420px at 92% 25%,rgba(30,93,255,.16),transparent 65%),
+ radial-gradient(650px 500px at 82% 90%,rgba(124,42,255,.15),transparent 68%),
+ #030817!important}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:
+ linear-gradient(115deg,transparent 0 45%,rgba(95,55,255,.035) 55%,transparent 65%),
+ radial-gradient(circle at 25% 80%,rgba(84,130,255,.07) 0 1px,transparent 2px);}
+.container{width:min(1380px,calc(100% - 56px))!important;max-width:1380px!important;margin:0 auto!important}
+.dashboard{width:100%!important;display:grid!important;grid-template-columns:minmax(0,1.68fr) minmax(390px,.82fr)!important;gap:18px!important;align-items:start!important;}
+.dashboard-left,.dashboard-right{min-width:0!important;display:flex!important;flex-direction:column!important;gap:18px!important;align-items:stretch!important}
+.dashboard-left>.patient-card,.dashboard-left>.clinical-insights,.dashboard-right>.empty-result,.dashboard-right>.result-card,.dashboard-right>.ai-assistant{width:100%!important;grid-column:auto!important;grid-row:auto!important;margin:0!important}
+.dashboard-left>.patient-card{padding:20px 22px 22px!important}
+.dashboard-left>.clinical-insights{padding:18px!important;min-height:205px!important}
+.dashboard-right>.empty-result{min-height:330px!important}
+.dashboard-right>.result-card{padding:18px!important}
+.dashboard-right>.ai-assistant{min-height:480px!important;padding:20px!important}
+/* Large, usable AI chat panel */
+.dashboard-right .ai-assistant .chat-history{min-height:245px!important;max-height:290px!important;overflow-y:auto!important}
+.dashboard-right .ai-assistant .quick-questions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin:12px 0!important}
+.dashboard-right .ai-assistant .assistant-input{display:grid!important;grid-template-columns:1fr 50px!important;gap:9px!important;margin-top:10px!important}
+.dashboard-right .ai-assistant .assistant-input input{height:46px!important;font-size:12px!important}
+.dashboard-right .ai-assistant .assistant-input button{height:46px!important}
+/* Keep How It Works compact but visible directly under the form */
+.dashboard-left .insight-steps{grid-template-columns:repeat(3,1fr)!important;gap:10px!important}
+.dashboard-left .insight-step{min-height:92px!important;padding:12px!important}
+/* Reference-style background glow around the hero */
+.hero{background:transparent!important;position:relative!important;overflow:visible!important}
+.hero:after{content:"";position:absolute;width:330px;height:330px;right:-55px;top:-60px;border-radius:50%;background:radial-gradient(circle,rgba(91,55,255,.16),rgba(37,99,235,.07) 38%,transparent 70%);filter:blur(3px);pointer-events:none;z-index:0}
+.hero-heart{z-index:3!important}
+.heart-core{animation:heartBeat 1.25s ease-in-out infinite!important;filter:drop-shadow(0 0 18px rgba(168,85,247,.65))!important}
+.heart-core:after{content:"";position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(139,92,246,.30);box-shadow:0 0 35px rgba(99,102,241,.22);animation:heartRing 2.5s ease-out infinite!important}
+@keyframes heartBeat{0%,100%{transform:rotate(-4deg) scale(1)}15%{transform:rotate(-4deg) scale(1.09)}30%{transform:rotate(-4deg) scale(1)}45%{transform:rotate(-4deg) scale(1.05)}60%{transform:rotate(-4deg) scale(1)}}
+@keyframes heartRing{0%{transform:scale(.75);opacity:.75}75%,100%{transform:scale(1.35);opacity:0}}
+/* Remove any old grid row behavior that caused the huge blank area */
+.dashboard>*{position:static!important;transform:none!important;top:auto!important}
+@media(max-width:1050px){
+ .container{width:min(100% - 28px,900px)!important}
+ .dashboard{grid-template-columns:1fr!important}
+ .dashboard-left,.dashboard-right{gap:14px!important}
+ .dashboard-right>.ai-assistant{min-height:420px!important}
+}
+@media(max-width:700px){
+ .container{width:calc(100% - 24px)!important}
+ .dashboard{display:flex!important;flex-direction:column!important}
+ .dashboard-left,.dashboard-right{width:100%!important}
+ .dashboard-left .insight-steps{grid-template-columns:1fr!important}
+ .dashboard-right .ai-assistant .quick-questions{grid-template-columns:1fr!important}
+ .dashboard-right>.ai-assistant{min-height:390px!important}
+}
+</style>
+
+
+<style id="ai-assistant-full-width-fix">
+/* AI Assistant is intentionally OUTSIDE the two-column dashboard */
+.dashboard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.ai-assistant {
+    width: 100% !important;
+    max-width: none !important;
+    grid-column: auto !important;
+    margin: 24px 0 0 !important;
+    box-sizing: border-box !important;
+}
+
+.ai-assistant .assistant-box {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.ai-assistant .chat-history {
+    width: 100% !important;
+    min-height: 360px !important;
+    max-height: 460px !important;
+    overflow-y: auto !important;
+}
+
+.ai-assistant .quick-questions {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+}
+
+.ai-assistant .assistant-input {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 60px !important;
+    gap: 12px !important;
+}
+
+.ai-assistant .assistant-input input {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    box-sizing: border-box !important;
+}
+
+.ai-assistant .assistant-input button {
+    width: 60px !important;
+    height: 58px !important;
+}
+
+@media (max-width: 1050px) {
+    .dashboard {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .ai-assistant .quick-questions {
+        grid-template-columns: 1fr !important;
+    }
+
+    .ai-assistant .assistant-input {
+        grid-template-columns: minmax(0, 1fr) 52px !important;
+    }
+
+    .ai-assistant .assistant-input button {
+        width: 52px !important;
+    }
+}
+</style>
+
+
+<style id="final-ai-chat-fix">
+/* ===== FINAL AI HEALTH ASSISTANT FIX ===== */
+/* Assistant is outside the 2-column dashboard and uses the full page container. */
+.ai-assistant {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 24px 0 0 !important;
+    padding: 22px !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+}
+
+.ai-assistant .card-header {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 18px !important;
+}
+
+.ai-assistant .assistant-box {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    padding: 16px !important;
+}
+
+/* Large chat area, but leave enough room for options + input. */
+.ai-assistant .chat-history {
+    width: 100% !important;
+    height: 330px !important;
+    min-height: 330px !important;
+    max-height: 330px !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Make all three quick-question buttons visible. */
+.ai-assistant .quick-questions {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    gap: 12px !important;
+    margin: 14px 0 !important;
+    height: auto !important;
+    min-height: 64px !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.ai-assistant .quick-questions button {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 64px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+}
+
+/* Full-width question input + send button. */
+.ai-assistant .assistant-input {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 60px !important;
+    width: 100% !important;
+    gap: 12px !important;
+    margin-top: 12px !important;
+}
+
+.ai-assistant .assistant-input input {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    box-sizing: border-box !important;
+}
+
+.ai-assistant .assistant-input button {
+    width: 60px !important;
+    height: 58px !important;
+}
+
+/* Old rules that expected the assistant inside dashboard-right must not affect it. */
+.dashboard-right .ai-assistant .chat-history,
+.dashboard-right .ai-assistant .quick-questions,
+.dashboard-right .ai-assistant .assistant-input,
+.dashboard-right > .ai-assistant {
+    max-width: none !important;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .ai-assistant {
+        padding: 18px !important;
+    }
+
+    .ai-assistant .quick-questions {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .ai-assistant {
+        padding: 14px !important;
+    }
+
+    .ai-assistant .chat-history {
+        height: 280px !important;
+        min-height: 280px !important;
+        max-height: 280px !important;
+    }
+
+    .ai-assistant .quick-questions {
+        grid-template-columns: 1fr !important;
+    }
+
+    .ai-assistant .assistant-input {
+        grid-template-columns: minmax(0, 1fr) 52px !important;
+    }
+
+    .ai-assistant .assistant-input button {
+        width: 52px !important;
+    }
+}
+</style>
+
+
+<style id="medirisk-upgrade-features">
+/* =========================================================
+   MEDIRISK AI — SMART DASHBOARD UPGRADES
+========================================================= */
+.mr-upgrade-card{margin-top:0;padding:20px;border:1px solid rgba(93,118,255,.25);border-radius:18px;background:linear-gradient(145deg,rgba(10,20,48,.78),rgba(8,14,34,.72));box-shadow:0 18px 45px rgba(0,0,0,.18)}
+.mr-upgrade-head{display:flex;align-items:center;gap:12px;margin-bottom:15px}
+.mr-upgrade-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);box-shadow:0 0 22px rgba(124,58,237,.3);font-size:17px}
+.mr-upgrade-head h3{margin:0;font-size:17px}.mr-upgrade-head p{margin:4px 0 0;color:#8492b5;font-size:11px}
+.mr-score-wrap{display:flex;align-items:center;gap:20px;padding:15px;border-radius:15px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)}
+.mr-score-ring{width:112px;height:112px;flex:0 0 112px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#8b5cf6 calc(var(--score)*1%),rgba(49,64,105,.42) 0);position:relative;box-shadow:0 0 28px rgba(124,58,237,.18)}
+.mr-score-ring:before{content:"";position:absolute;inset:8px;border-radius:50%;background:#081126;border:1px solid rgba(255,255,255,.06)}
+.mr-score-ring-inner{position:relative;text-align:center}.mr-score-ring-inner strong{display:block;font-size:28px;line-height:1}.mr-score-ring-inner span{font-size:10px;color:#8794b5}.mr-score-meta{flex:1}.mr-score-meta .score-label{font-size:18px;font-weight:800;margin-bottom:8px}.mr-score-meta p{margin:0;color:#8794b5;font-size:11px;line-height:1.5}
+.mr-health-checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.mr-health-check{padding:10px 11px;border-radius:11px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);font-size:11px;display:flex;justify-content:space-between;gap:8px}.mr-health-check span{color:#8d9ab9}.mr-health-check strong{font-size:11px}.mr-good{color:#4ade80}.mr-warn{color:#fbbf24}
+.mr-insights-list{display:grid;gap:9px}.mr-insight{display:flex;gap:11px;padding:12px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)}.mr-insight i{margin-top:2px;color:#a78bfa}.mr-insight strong{display:block;font-size:12px;margin-bottom:3px}.mr-insight p{margin:0;color:#8d9ab9;font-size:11px;line-height:1.45}
+.mr-factor-btn{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 1fr auto;align-items:center;gap:10px;padding:9px 0;background:transparent;border:0;color:inherit;text-align:left;cursor:pointer;border-radius:8px}.mr-factor-btn:hover{background:rgba(139,92,246,.08);padding-left:7px;padding-right:7px}.mr-factor-name{font-size:11px}.mr-factor-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}.mr-factor-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#8b5cf6,#3b82f6)}.mr-factor-value{font-size:10px;color:#aeb9d3;min-width:38px;text-align:right}
+.mr-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mr-summary-item{padding:11px 12px;border-radius:11px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)}.mr-summary-item span{display:block;color:#7f8cab;font-size:10px;margin-bottom:4px}.mr-summary-item strong{font-size:12px}.mr-summary-wide{grid-column:1/-1}
+.mr-sim-controls{display:grid;gap:13px}.mr-sim-row{padding:11px 12px;border:1px solid rgba(255,255,255,.055);border-radius:12px;background:rgba(255,255,255,.025)}.mr-sim-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:7px}.mr-sim-label strong{color:#c4b5fd}.mr-sim-row input[type=range]{width:100%;accent-color:#8b5cf6}.mr-sim-results{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}.mr-sim-result{padding:11px;text-align:center;border-radius:11px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055)}.mr-sim-result span{display:block;color:#7f8cab;font-size:9px;margin-bottom:4px}.mr-sim-result strong{font-size:14px}.mr-sim-note{font-size:9px;color:#7f8cab;line-height:1.4;margin-top:10px}.mr-sim-btn{width:100%;margin-top:12px;padding:11px;border:0;border-radius:11px;color:#fff;font-weight:800;background:linear-gradient(90deg,#8b5cf6,#3b82f6);cursor:pointer}.mr-sim-btn:disabled{opacity:.65;cursor:wait}
+.mr-history-table{display:grid;gap:7px}.mr-history-row{display:grid;grid-template-columns:1.2fr .6fr .7fr;align-items:center;padding:10px 11px;border-radius:10px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);font-size:10px}.mr-history-row.header{color:#7f8cab;background:transparent;border:0;padding-bottom:2px}.mr-history-risk{font-weight:800}.mr-history-trend{margin-top:12px;padding:11px;border-radius:11px;background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.14);font-size:11px}.mr-trend-down{color:#4ade80}.mr-trend-up{color:#fb7185}.mr-trend-flat{color:#c4b5fd}.mr-trend-chart-wrap{margin-top:12px;padding:12px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}.mr-trend-chart-title{display:flex;justify-content:space-between;font-size:10px;color:#8d9ab9;margin-bottom:8px}.mr-trend-chart-title strong{font-weight:500;color:#697792}.mr-trend-chart{width:100%;height:120px;overflow:visible}.mr-trend-grid{stroke:rgba(255,255,255,.07);stroke-width:1}.mr-trend-line{fill:none;stroke:#8b5cf6;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.mr-trend-dot{fill:#8b5cf6}.mr-trend-label{fill:#9aa7c5;font-size:9px;font-family:Inter,Arial,sans-serif}
+.mr-modal{position:fixed;inset:0;background:rgba(1,5,18,.72);backdrop-filter:blur(10px);z-index:5000;display:none;align-items:center;justify-content:center;padding:20px}.mr-modal.open{display:flex}.mr-modal-box{width:min(480px,100%);padding:22px;border-radius:18px;background:#0b1430;border:1px solid rgba(139,92,246,.35);box-shadow:0 25px 80px rgba(0,0,0,.5)}.mr-modal-top{display:flex;justify-content:space-between;gap:15px;align-items:start}.mr-modal-top h3{margin:0;font-size:17px}.mr-modal-top button{border:0;background:rgba(255,255,255,.06);color:#cbd5e1;width:32px;height:32px;border-radius:9px;cursor:pointer}.mr-impact{display:inline-block;margin:12px 0;padding:5px 9px;border-radius:99px;background:rgba(139,92,246,.13);color:#c4b5fd;font-size:10px;font-weight:800}.mr-modal-box p{font-size:12px;line-height:1.65;color:#9aa7c5;margin:0}.mr-modal-value{margin-top:13px;padding:11px;border-radius:11px;background:rgba(255,255,255,.025);font-size:11px}.mr-modal-value strong{color:#f8fafc}
+@media(max-width:700px){.mr-score-wrap{flex-direction:column;text-align:center}.mr-health-checks,.mr-summary-grid{grid-template-columns:1fr}.mr-summary-wide{grid-column:auto}.mr-sim-results{grid-template-columns:1fr 1fr}.mr-sim-result:last-child{grid-column:1/-1}}
+</style>
+
+<style id="medirisk-ai-2">
+.mr-ai-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 14px;padding:11px 14px;border:1px solid rgba(99,102,241,.18);background:rgba(99,102,241,.06);border-radius:12px}
+.mr-ai-status{display:flex;align-items:center;gap:8px;color:#dbeafe;font-size:13px;font-weight:700}.mr-ai-status small{color:#7f8db0;font-weight:500;margin-left:4px}.mr-ai-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.12),0 0 14px rgba(34,197,94,.65)}
+.mr-clear-chat{border:1px solid rgba(148,163,184,.16);background:rgba(15,23,42,.65);color:#aeb9d4;border-radius:9px;padding:7px 11px;font-size:12px;cursor:pointer}.mr-clear-chat:hover{color:#fff;border-color:rgba(139,92,246,.5)}
+.mr-ai-context{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.mr-ai-context>div{padding:11px 13px;border-radius:11px;border:1px solid rgba(148,163,184,.10);background:rgba(15,23,42,.48)}.mr-ai-context span{display:block;color:#71809f;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}.mr-ai-context strong{color:#eef2ff;font-size:14px}
+.ai-assistant .quick-questions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}.ai-assistant .quick-questions button{min-height:54px}.ai-assistant .quick-questions button:hover{transform:translateY(-2px)}
+.ai-assistant .chat-history{min-height:360px!important;max-height:460px!important}.ai-assistant .ai-response{line-height:1.75}.ai-assistant .ai-error{color:#fca5a5}
+.thinking-dots span{animation:mrDot 1.2s infinite}.thinking-dots span:nth-child(2){animation-delay:.15s}.thinking-dots span:nth-child(3){animation-delay:.3s}@keyframes mrDot{0%,70%,100%{opacity:.25}35%{opacity:1}}
+@media(max-width:800px){.mr-ai-context{grid-template-columns:repeat(2,1fr)}.ai-assistant .quick-questions{grid-template-columns:1fr 1fr!important}}
+@media(max-width:520px){.mr-ai-toolbar{align-items:flex-start}.mr-ai-context{grid-template-columns:1fr 1fr}.ai-assistant .quick-questions{grid-template-columns:1fr!important}}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/" class="nav-brand premium-brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div class="brand-text">
+                <h1>MediRisk <span>AI</span></h1>
+                <small>Intelligent Health Assessment</small>
+            </div>
+        </a>
+
+        <div class="main-nav">
+            <a href="/" class="main-nav-link">
+                <i class="fa-solid fa-house"></i><span>Home</span>
+            </a>
+            <a href="/assessment" class="main-nav-link active">
+                <i class="fa-solid fa-clipboard-check"></i><span>Assessment</span>
+            </a>
+            <a href="#ai-assistant" class="main-nav-link">
+                <i class="fa-solid fa-robot"></i><span>AI Assistant</span>
+            </a>
+        </div>
+
+        <div class="nav-actions">
+            <div class="nav-status premium-status">
+                <span class="status-dot"></span>
+                AI System Online
+            </div>
+            <div class="profile-icon" aria-label="MediRisk AI">
+                <i class="fa-solid fa-user-doctor"></i>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="container">
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i>
+            AI-Powered Healthcare
+        </div>
+
+        <h2>
+            Smart Heart Disease
+            <span>Risk Assessment</span>
+        </h2>
+
+        <p>
+            Analyze patient health parameters using machine learning
+            and get an intelligent heart disease risk assessment.
+        </p>
+
+    </div>
+
+    <div class="hero-benefits">
+        <div class="benefit-item"><div class="benefit-icon"><i class="fa-solid fa-brain"></i></div><strong>AI Powered</strong><span>Smart predictions</span></div>
+        <div class="benefit-item"><div class="benefit-icon"><i class="fa-solid fa-shield-halved"></i></div><strong>Secure</strong><span>Your data is safe</span></div>
+        <div class="benefit-item"><div class="benefit-icon"><i class="fa-solid fa-bolt"></i></div><strong>Fast Results</strong><span>Instant analysis</span></div>
+        <div class="benefit-item"><div class="benefit-icon"><i class="fa-solid fa-heart"></i></div><strong>Better Health</strong><span>Take control</span></div>
+    </div>
+
+    <div class="hero-heart" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div>
+        <div class="heart-core"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="ecg-line"><span></span></div>
+    </div>
+
+</section>
+
+
+
+
+<!-- =========================================================
+     DASHBOARD
+========================================================= -->
+
+<section class="dashboard">
+
+<div class="dashboard-left">
+
+<!-- =========================================================
+     PATIENT FORM
+========================================================= -->
+
+<div class="card patient-card">
+
+    <div class="card-header">
+
+        <div class="header-icon">
+            <i class="fa-solid fa-user"></i>
+        </div>
+
+        <div>
+            <h2>Patient Information</h2>
+            <p>Enter the patient's health parameters</p>
+        </div>
+
+    </div>
+
+
+    <form action="/predict" method="POST">
+
+        <div class="form-grid">
+
+
+            <!-- Patient Name -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-id-card"></i>
+                    Patient Name
+                </label>
+
+                <input
+                    type="text"
+                    name="patient_name"
+                    placeholder="e.g. Krishna"
+                    value="{{ patient_name if patient_name else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Age -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-calendar"></i>
+                    Age
+                </label>
+
+                <input
+                    type="number"
+                    name="age"
+                    placeholder="e.g. 45"
+                    min="1"
+                    max="120"
+                    value="{{ patient.age if patient else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Lifestyle & Medical History -->
+
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-smoking"></i>
+                    Smoking
+                </label>
+                <select name="smoking" required>
+                    <option value="">Select Smoking</option>
+                    <option value="1" {% if patient and patient.smoking == 1 %}selected{% endif %}>Yes</option>
+                    <option value="0" {% if patient and patient.smoking == 0 %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-ruler-vertical"></i> Height</label>
+                <input type="number" name="height_cm" placeholder="e.g. 175" min="50" max="250" step="0.1" value="{{ patient.height_cm if patient else '' }}" required>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-weight-scale"></i> Weight</label>
+                <input type="number" name="weight_kg" id="weightInput" placeholder="e.g. 70" min="10" max="300" step="0.1" value="{{ patient.weight_kg if patient else '' }}" required>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-calculator"></i> BMI</label>
+                <input type="number" name="bmi_display" id="bmiDisplay" placeholder="Auto calculated" value="{{ patient.bmi if patient else '' }}" step="0.01" readonly>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-syringe"></i> Diabetes</label>
+                <select name="diabetes" required>
+                    <option value="">Select</option>
+                    <option value="1" {% if patient and patient.diabetes == 1 %}selected{% endif %}>Yes</option>
+                    <option value="0" {% if patient and patient.diabetes == 0 %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-people-group"></i> Family History</label>
+                <select name="family_history" required>
+                    <option value="">Select</option>
+                    <option value="1" {% if patient and patient.family_history == 1 %}selected{% endif %}>Yes</option>
+                    <option value="0" {% if patient and patient.family_history == 0 %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-person-walking"></i> Physical Activity</label>
+                <select name="physical_activity" required>
+                    <option value="">Select Activity</option>
+                    <option value="1" {% if patient and patient.physical_activity == 1 %}selected{% endif %}>Low</option>
+                    <option value="2" {% if patient and patient.physical_activity == 2 %}selected{% endif %}>Moderate</option>
+                    <option value="3" {% if patient and patient.physical_activity == 3 %}selected{% endif %}>High</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-brain"></i> Stress Level</label>
+                <select name="stress_level" required>
+                    <option value="">Select Stress</option>
+                    <option value="1" {% if patient and patient.stress_level == 1 %}selected{% endif %}>Low</option>
+                    <option value="2" {% if patient and patient.stress_level == 2 %}selected{% endif %}>Moderate</option>
+                    <option value="3" {% if patient and patient.stress_level == 3 %}selected{% endif %}>High</option>
+                </select>
+            </div>
+
+
+            <!-- Sex -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-person"></i>
+                    Sex
+                </label>
+
+                <select name="sex" required>
+
+                    <option value="">Select Sex</option>
+
+                    <option
+                        value="1"
+                        {% if patient and patient.sex == 1 %}selected{% endif %}
+                    >
+                        Male
+                    </option>
+
+                    <option
+                        value="0"
+                        {% if patient and patient.sex == 0 %}selected{% endif %}
+                    >
+                        Female
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Chest Pain -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-heart"></i>
+                    Chest Pain Type
+                </label>
+
+                <select name="cp" required>
+
+                    <option value="">Select Type</option>
+
+                    <option
+                        value="1"
+                        {% if patient and patient.cp == 1 %}selected{% endif %}
+                    >
+                        Typical Angina
+                    </option>
+
+                    <option
+                        value="2"
+                        {% if patient and patient.cp == 2 %}selected{% endif %}
+                    >
+                        Atypical Angina
+                    </option>
+
+                    <option
+                        value="3"
+                        {% if patient and patient.cp == 3 %}selected{% endif %}
+                    >
+                        Non-anginal Pain
+                    </option>
+
+                    <option
+                        value="4"
+                        {% if patient and patient.cp == 4 %}selected{% endif %}
+                    >
+                        Asymptomatic
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Blood Pressure -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-gauge-high"></i>
+                    Resting Blood Pressure
+                </label>
+
+                <input
+                    type="number"
+                    name="trestbps"
+                    placeholder="mm Hg"
+                    min="70"
+                    max="250"
+                    value="{{ patient.trestbps if patient else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Cholesterol -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-droplet"></i>
+                    Cholesterol
+                </label>
+
+                <input
+                    type="number"
+                    name="chol"
+                    placeholder="mg/dl"
+                    min="100"
+                    max="600"
+                    value="{{ patient.chol if patient else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Fasting Blood Sugar -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-cubes-stacked"></i>
+                    Fasting Blood Sugar
+                </label>
+
+                <select name="fbs" required>
+
+                    <option value="">Select</option>
+
+                    <option
+                        value="0"
+                        {% if patient and patient.fbs == 0 %}selected{% endif %}
+                    >
+                        Normal (&lt; 120 mg/dl)
+                    </option>
+
+                    <option
+                        value="1"
+                        {% if patient and patient.fbs == 1 %}selected{% endif %}
+                    >
+                        High (&gt; 120 mg/dl)
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Resting ECG -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-wave-square"></i>
+                    Resting ECG
+                </label>
+
+                <select name="restecg" required>
+
+                    <option value="">Select</option>
+
+                    <option
+                        value="0"
+                        {% if patient and patient.restecg == 0 %}selected{% endif %}
+                    >
+                        Normal
+                    </option>
+
+                    <option
+                        value="1"
+                        {% if patient and patient.restecg == 1 %}selected{% endif %}
+                    >
+                        ST-T Wave Abnormality
+                    </option>
+
+                    <option
+                        value="2"
+                        {% if patient and patient.restecg == 2 %}selected{% endif %}
+                    >
+                        Left Ventricular Hypertrophy
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Maximum Heart Rate -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    Maximum Heart Rate
+                </label>
+
+                <input
+                    type="number"
+                    name="thalach"
+                    placeholder="e.g. 150"
+                    min="60"
+                    max="250"
+                    value="{{ patient.thalach if patient else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Exercise Angina -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-person-running"></i>
+                    Exercise Induced Angina
+                </label>
+
+                <select name="exang" required>
+
+                    <option value="">Select</option>
+
+                    <option
+                        value="0"
+                        {% if patient and patient.exang == 0 %}selected{% endif %}
+                    >
+                        No
+                    </option>
+
+                    <option
+                        value="1"
+                        {% if patient and patient.exang == 1 %}selected{% endif %}
+                    >
+                        Yes
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Oldpeak -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-chart-line"></i>
+                    ST Depression (Oldpeak)
+                </label>
+
+                <input
+                    type="number"
+                    step="0.1"
+                    name="oldpeak"
+                    placeholder="e.g. 1.0"
+                    min="0"
+                    max="10"
+                    value="{{ patient.oldpeak if patient else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Slope -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-chart-area"></i>
+                    ST Segment Slope
+                </label>
+
+                <select name="slope" required>
+
+                    <option value="">Select</option>
+
+                    <option
+                        value="1"
+                        {% if patient and patient.slope == 1 %}selected{% endif %}
+                    >
+                        Upsloping
+                    </option>
+
+                    <option
+                        value="2"
+                        {% if patient and patient.slope == 2 %}selected{% endif %}
+                    >
+                        Flat
+                    </option>
+
+                    <option
+                        value="3"
+                        {% if patient and patient.slope == 3 %}selected{% endif %}
+                    >
+                        Downsloping
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Major Vessels -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-road"></i>
+                    Major Vessels (CA)
+                </label>
+
+                <select name="ca" required>
+
+                    <option value="">Select</option>
+
+                    <option
+                        value="0"
+                        {% if patient and patient.ca == 0 %}selected{% endif %}
+                    >
+                        0
+                    </option>
+
+                    <option
+                        value="1"
+                        {% if patient and patient.ca == 1 %}selected{% endif %}
+                    >
+                        1
+                    </option>
+
+                    <option
+                        value="2"
+                        {% if patient and patient.ca == 2 %}selected{% endif %}
+                    >
+                        2
+                    </option>
+
+                    <option
+                        value="3"
+                        {% if patient and patient.ca == 3 %}selected{% endif %}
+                    >
+                        3
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Thalassemia -->
+
+            <div class="input-group">
+
+                <label>
+                    <i class="fa-solid fa-vial"></i>
+                    Thalassemia
+                </label>
+
+                <select name="thal" required>
+
+                    <option value="">Select</option>
+
+                    <option
+                        value="3"
+                        {% if patient and patient.thal == 3 %}selected{% endif %}
+                    >
+                        Normal
+                    </option>
+
+                    <option
+                        value="6"
+                        {% if patient and patient.thal == 6 %}selected{% endif %}
+                    >
+                        Fixed Defect
+                    </option>
+
+                    <option
+                        value="7"
+                        {% if patient and patient.thal == 7 %}selected{% endif %}
+                    >
+                        Reversible Defect
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- Analyze Button -->
+
+        <button
+            type="submit"
+            class="predict-btn"
+        >
+
+            <span>
+                <i class="fa-solid fa-brain"></i>
+                Analyze Heart Risk
+            </span>
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </button>
+
+    </form>
+
+    
+
+</div>
+
+<!-- =====================================================
+     CLINICAL INSIGHTS
+====================================================== -->
+
+<div class="clinical-insights">
+
+    <div class="clinical-insights-header">
+        <div class="clinical-icon">
+            <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+
+        <div>
+            <h3>How MediRisk AI Works</h3>
+            <p>Intelligent analysis in three simple steps</p>
+        </div>
+    </div>
+
+    <div class="insight-steps">
+
+        <div class="insight-step">
+            <div class="step-number">01</div>
+            <div class="step-content">
+                <strong>Clinical Data</strong>
+                <span>
+                    Clinical and lifestyle information is collected from the patient.
+                </span>
+            </div>
+        </div>
+
+        <div class="insight-step">
+            <div class="step-number">02</div>
+            <div class="step-content">
+                <strong>AI Analysis</strong>
+                <span>
+                    Random Forest analyzes the original clinical model features, while lifestyle data adds patient context.
+                </span>
+            </div>
+        </div>
+
+        <div class="insight-step">
+            <div class="step-number">03</div>
+            <div class="step-content">
+                <strong>Risk Assessment</strong>
+                <span>
+                    The system generates a probability-based assessment with lifestyle context.
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="insight-footer">
+        <i class="fa-solid fa-shield-heart"></i>
+        <span>Designed for educational and research purposes</span>
+    </div>
+
+</div>
+
+{% if prediction_made %}
+
+<!-- PERSONALIZED INSIGHTS -->
+<div class="mr-upgrade-card">
+    <div class="mr-upgrade-head">
+        <div class="mr-upgrade-icon"><i class="fa-solid fa-lightbulb"></i></div>
+        <div><h3>Personalized Health Insights</h3><p>Educational observations based on the entered profile</p></div>
+    </div>
+    <div class="mr-insights-list">
+        {% for recommendation in recommendations %}
+        <div class="mr-insight">
+            <i class="fa-solid fa-circle-check"></i>
+            <div><strong>{{ ['Blood Pressure','Cholesterol','Lifestyle','Health Profile','Preventive Care'][loop.index0 if loop.index0 < 5 else 4] }}</strong><p>{{ recommendation }}</p></div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- WHAT-IF SIMULATOR -->
+<div class="mr-upgrade-card" id="whatIfSimulator">
+    <div class="mr-upgrade-head">
+        <div class="mr-upgrade-icon"><i class="fa-solid fa-sliders"></i></div>
+        <div><h3>What-If Health Simulator</h3><p>Explore educational scenarios using the existing trained model</p></div>
+    </div>
+    <div class="mr-sim-controls">
+        <div class="mr-sim-row"><div class="mr-sim-label"><span>Cholesterol</span><strong id="simCholValue">{{ patient.chol }}</strong></div><input id="simChol" type="range" min="100" max="350" value="{{ patient.chol }}" oninput="document.getElementById('simCholValue').textContent=this.value"></div>
+        <div class="mr-sim-row"><div class="mr-sim-label"><span>Resting Blood Pressure</span><strong id="simBpValue">{{ patient.trestbps }}</strong></div><input id="simBp" type="range" min="80" max="220" value="{{ patient.trestbps }}" oninput="document.getElementById('simBpValue').textContent=this.value"></div>
+        <div class="mr-sim-row"><div class="mr-sim-label"><span>Maximum Heart Rate</span><strong id="simHrValue">{{ patient.thalach }}</strong></div><input id="simHr" type="range" min="60" max="220" value="{{ patient.thalach }}" oninput="document.getElementById('simHrValue').textContent=this.value"></div>
+    </div>
+    <button class="mr-sim-btn" type="button" onclick="runWhatIf()"><i class="fa-solid fa-arrows-rotate"></i> Recalculate Scenario</button>
+    <div class="mr-sim-results">
+        <div class="mr-sim-result"><span>Current Risk</span><strong>{{ disease_probability }}%</strong></div>
+        <div class="mr-sim-result"><span>Scenario Risk</span><strong id="simScenarioRisk">—</strong></div>
+        <div class="mr-sim-result"><span>Potential Change</span><strong id="simChange">—</strong></div>
+    </div>
+    <div class="mr-sim-note"><i class="fa-solid fa-circle-info"></i> Educational simulation only. It is not a medical prediction, diagnosis, or treatment recommendation.</div>
+</div>
+
+<!-- RISK HISTORY -->
+{% if history and history|length > 0 %}
+<div class="mr-upgrade-card">
+    <div class="mr-upgrade-head">
+        <div class="mr-upgrade-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div><h3>Assessment History</h3><p>Your recent MediRisk AI assessment results</p></div>
+    </div>
+    <div class="mr-history-table">
+        <div class="mr-history-row header"><span>Date</span><span>Risk</span><span>Level</span></div>
+        {% for item in history[:8] %}
+        <div class="mr-history-row"><span>{{ item.created_at }}</span><span class="mr-history-risk">{{ item.disease_probability }}%</span><span>{{ item.risk_level }}</span></div>
+        {% endfor %}
+    </div>
+    {% if history|length > 1 %}
+        {% set current = history[0].disease_probability|float %}
+        {% set previous = history[1].disease_probability|float %}
+        {% set delta = (current - previous)|round(2) %}
+        <div class="mr-trend-chart-wrap">
+            <div class="mr-trend-chart-title"><span>Risk Trend</span><strong>Recent assessments</strong></div>
+            <svg id="mrRiskTrend" class="mr-trend-chart" viewBox="0 0 420 120" preserveAspectRatio="none" aria-label="Risk trend chart"></svg>
+        </div>
+        <div class="mr-history-trend {% if delta < 0 %}mr-trend-down{% elif delta > 0 %}mr-trend-up{% else %}mr-trend-flat{% endif %}">
+            {% if delta < 0 %}<strong>↓ {{ (-delta)|round(2) }} percentage points</strong> lower than your previous assessment.{% elif delta > 0 %}<strong>↑ {{ delta|round(2) }} percentage points</strong> higher than your previous assessment.{% else %}<strong>No change</strong> from your previous assessment.{% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endif %}
+
+</div><!-- /.dashboard-left -->
+
+<div class="dashboard-right">
+
+
+<!-- =========================================================
+     RESULT
+========================================================= -->
+
+{% if prediction_made %}
+
+<div class="card result-card">
+
+    <div class="card-header">
+
+        <div class="header-icon">
+            <i class="fa-solid fa-chart-pie"></i>
+        </div>
+
+        <div>
+            <h2>Risk Assessment</h2>
+            <p>AI-generated prediction results</p>
+        </div>
+
+    </div>
+
+
+    <!-- Patient -->
+
+    {% if patient_name %}
+
+    <div class="patient-name">
+
+        <span>Patient</span>
+
+        <strong>
+            {{ patient_name }}
+        </strong>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Risk Section -->
+
+    <div class="risk-section">
+
+        <div
+            class="risk-circle {{ risk_class }}"
+            style="--risk: {{ disease_probability }}%;"
+        >
+
+            <div class="risk-circle-inner">
+
+                <strong>
+                    {{ disease_probability }}%
+                </strong>
+
+                <span>
+                    Disease Risk
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Risk Explanation -->
+
+        <div class="risk-explanation-card">
+
+            <div class="risk-explanation-header">
+
+                <div>
+
+                    <h3>
+                        <i class="fa-solid fa-circle-info"></i>
+                        Risk Level Explanation
+                    </h3>
+
+                    <p>
+                        Understand what your AI assessment result means
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="risk-levels">
+
+
+                <!-- LOW -->
+
+                <div class="risk-level-item low-risk">
+
+                    <div class="risk-icon">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+
+                    <div class="risk-content">
+
+                        <strong>Low Risk</strong>
+
+                        <span>
+                            Disease risk probability below 30%
+                        </span>
+
+                        <p>
+                            The model estimates a lower probability of
+                            heart disease based on the provided health
+                            parameters.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MODERATE -->
+
+                <div class="risk-level-item moderate-risk">
+
+                    <div class="risk-icon">
+                        <i class="fa-solid fa-exclamation"></i>
+                    </div>
+
+                    <div class="risk-content">
+
+                        <strong>Moderate Risk</strong>
+
+                        <span>
+                            Disease risk probability from 30% to 59.99%
+                        </span>
+
+                        <p>
+                            The model estimates a moderate probability
+                            of heart disease. The result should be
+                            discussed with a qualified healthcare
+                            professional.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- HIGH -->
+
+                <div class="risk-level-item high-risk">
+
+                    <div class="risk-icon">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+
+                    <div class="risk-content">
+
+                        <strong>High Risk</strong>
+
+                        <span>
+                            Disease risk probability 60% or higher
+                        </span>
+
+                        <p>
+                            The model estimates a higher probability
+                            of heart disease. Professional medical
+                            evaluation is recommended.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Note -->
+
+            <div class="risk-note">
+
+                <i class="fa-solid fa-shield-heart"></i>
+
+                <span>
+
+                    <strong>Important:</strong>
+
+                    This AI assessment is for educational and research
+                    purposes only and is not a medical diagnosis.
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Risk Information -->
+
+        <div class="risk-info">
+
+            <div class="risk-badge {{ risk_class }}">
+                {{ risk_level }}
+            </div>
+
+            <h3>
+                {{ result }}
+            </h3>
+
+            <p>
+                Based on the patient's provided health parameters
+                and the trained machine learning model.
+            </p>
+
+        </div>
+
+        <!-- HEALTH SCORE -->
+        <div class="mr-upgrade-card">
+            <div class="mr-upgrade-head">
+                <div class="mr-upgrade-icon"><i class="fa-solid fa-heart-circle-check"></i></div>
+                <div><h3>Heart Health Score</h3><p>Educational overall wellness indicator</p></div>
+            </div>
+            <div class="mr-score-wrap">
+                <div class="mr-score-ring" style="--score: {{ health_score|default(0) }};">
+                    <div class="mr-score-ring-inner"><strong>{{ health_score|default(0) }}</strong><span>/ 100</span></div>
+                </div>
+                <div class="mr-score-meta"><div class="score-label">{{ health_score_label|default('—') }}</div><p>This score summarizes selected profile and clinical context. It is separate from the model's disease-risk probability.</p></div>
+            </div>
+            <div class="mr-health-checks">
+                <div class="mr-health-check"><span>BMI</span><strong class="{% if patient.bmi < 25 and patient.bmi >= 18.5 %}mr-good{% else %}mr-warn{% endif %}">{% if patient.bmi < 25 and patient.bmi >= 18.5 %}✓ Normal{% else %}⚠ Review{% endif %}</strong></div>
+                <div class="mr-health-check"><span>Blood Pressure</span><strong class="{% if patient.trestbps < 130 %}mr-good{% else %}mr-warn{% endif %}">{% if patient.trestbps < 130 %}✓ In range{% else %}⚠ Elevated{% endif %}</strong></div>
+                <div class="mr-health-check"><span>Cholesterol</span><strong class="{% if patient.chol < 200 %}mr-good{% else %}mr-warn{% endif %}">{% if patient.chol < 200 %}✓ Lower range{% else %}⚠ Elevated{% endif %}</strong></div>
+                <div class="mr-health-check"><span>Heart Rate</span><strong class="{% if patient.thalach >= 100 %}mr-good{% else %}mr-warn{% endif %}">{% if patient.thalach >= 100 %}✓ Recorded{% else %}⚠ Review{% endif %}</strong></div>
+            </div>
+        </div>
+
+        <!-- Download Report -->
+
+        <div class="report-download">
+
+            <a
+                href="{{ url_for('download_report') }}"
+                class="download-report-btn"
+            >
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                <span>
+                    Download Report
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         LIFESTYLE PROFILE
+    ====================================================== -->
+
+    <div class="lifestyle-profile">
+        <div class="feature-header">
+            <div>
+                <h3>Lifestyle &amp; Health Profile</h3>
+                <p>Additional patient information used for assessment context</p>
+            </div>
+            <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+
+        <div class="lifestyle-grid">
+            <div><span>Smoking</span><strong>{{ 'Yes' if patient.smoking == 1 else 'No' }}</strong></div>
+            <div><span>Diabetes</span><strong>{{ 'Yes' if patient.diabetes == 1 else 'No' }}</strong></div>
+            <div><span>Family History</span><strong>{{ 'Yes' if patient.family_history == 1 else 'No' }}</strong></div>
+            <div><span>Physical Activity</span><strong>{{ 'Low' if patient.physical_activity == 1 else ('Moderate' if patient.physical_activity == 2 else 'High') }}</strong></div>
+            <div><span>Stress Level</span><strong>{{ 'Low' if patient.stress_level == 1 else ('Moderate' if patient.stress_level == 2 else 'High') }}</strong></div>
+            <div><span>BMI</span><strong>{{ patient.bmi }}</strong></div>
+        </div>
+
+        <div class="lifestyle-note">
+            <i class="fa-solid fa-circle-info"></i>
+            Lifestyle fields are currently recorded as patient context and are not fed into the existing 13-feature Random Forest model.
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         PROBABILITY
+    ====================================================== -->
+
+    <div class="probability-section">
+
+        <h3>
+            Prediction Probability
+        </h3>
+
+
+        <!-- No Disease -->
+
+        <div class="probability-row">
+
+            <div class="probability-label">
+
+                <span>
+                    <i class="fa-solid fa-circle-check"></i>
+                    No Disease
+                </span>
+
+                <strong>
+                    {{ no_disease_probability }}%
+                </strong>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill safe"
+                    style="width: {{ no_disease_probability }}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Disease -->
+
+        <div class="probability-row">
+
+            <div class="probability-label">
+
+                <span>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Disease Risk
+                </span>
+
+                <strong>
+                    {{ disease_probability }}%
+                </strong>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill danger"
+                    style="width: {{ disease_probability }}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MODEL INFORMATION
+    ====================================================== -->
+
+    <div class="model-info">
+
+        <div class="model-item">
+
+            <i class="fa-solid fa-robot"></i>
+
+            <div>
+                <span>Model</span>
+                <strong>Random Forest</strong>
+            </div>
+
+        </div>
+
+
+        <div class="model-item">
+
+            <i class="fa-solid fa-bullseye"></i>
+
+            <div>
+                <span>Accuracy</span>
+                <strong>86.67%</strong>
+            </div>
+
+        </div>
+
+
+        <div class="model-item">
+
+            <i class="fa-solid fa-database"></i>
+
+            <div>
+                <span>Dataset</span>
+                <strong>Heart Disease</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ASSESSMENT SUMMARY -->
+    <div class="mr-upgrade-card">
+        <div class="mr-upgrade-head">
+            <div class="mr-upgrade-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div><h3>Assessment Summary</h3><p>Quick overview of this assessment</p></div>
+        </div>
+        <div class="mr-summary-grid">
+            <div class="mr-summary-item"><span>Patient</span><strong>{{ patient_name }}</strong></div>
+            <div class="mr-summary-item"><span>Age</span><strong>{{ patient.age }}</strong></div>
+            <div class="mr-summary-item"><span>BMI</span><strong>{{ patient.bmi }}</strong></div>
+            <div class="mr-summary-item"><span>Risk</span><strong>{{ disease_probability }}%</strong></div>
+            <div class="mr-summary-item"><span>Risk Level</span><strong>{{ risk_level }}</strong></div>
+            <div class="mr-summary-item"><span>Model</span><strong>Random Forest</strong></div>
+            <div class="mr-summary-item mr-summary-wide"><span>Model Accuracy</span><strong>86.67%</strong></div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         FEATURE IMPORTANCE
+    ====================================================== -->
+
+    {% if feature_importance %}
+
+    <div class="feature-section">
+
+        <div class="feature-header">
+
+            <div>
+
+                <h3>
+                    Top Model Factors
+                </h3>
+
+                <p>
+                    Global feature importance in the trained model · click to learn more
+                </p>
+
+            </div>
+
+            <i class="fa-solid fa-chart-column"></i>
+
+        </div>
+
+
+        <div class="feature-list">
+
+            {% for feature, importance in feature_importance.items() %}
+
+                {% if loop.index <= 5 %}
+
+                <button type="button" class="mr-factor-btn" onclick="openFactorInfo('{{ feature }}', '{{ (importance * 100)|round(1) }}', '{{ patient.get(feature, '') }}')">
+
+                    <div class="mr-factor-name">
+
+                        {% if feature == 'cp' %}
+                            Chest Pain Type
+
+                        {% elif feature == 'thal' %}
+                            Thalassemia
+
+                        {% elif feature == 'thalach' %}
+                            Maximum Heart Rate
+
+                        {% elif feature == 'oldpeak' %}
+                            ST Depression
+
+                        {% elif feature == 'ca' %}
+                            Major Blood Vessels
+
+                        {% elif feature == 'trestbps' %}
+                            Resting Blood Pressure
+
+                        {% elif feature == 'chol' %}
+                            Cholesterol
+
+                        {% elif feature == 'age' %}
+                            Age
+
+                        {% elif feature == 'sex' %}
+                            Sex
+
+                        {% elif feature == 'fbs' %}
+                            Fasting Blood Sugar
+
+                        {% elif feature == 'restecg' %}
+                            Resting ECG
+
+                        {% elif feature == 'exang' %}
+                            Exercise Angina
+
+                        {% elif feature == 'slope' %}
+                            ST Segment Slope
+
+                        {% else %}
+                            {{ feature }}
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="mr-factor-bar">
+                        <div class="mr-factor-fill" style="width: {{ (importance * 100)|round(1) }}%;"></div>
+                    </div>
+                    <span class="mr-factor-value">{{ (importance * 100)|round(1) }}%</span>
+
+                </button>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+{% else %}
+
+
+<!-- =========================================================
+     EMPTY RESULT
+========================================================= -->
+
+<div class="card empty-result">
+
+    <div class="empty-icon">
+
+        <i class="fa-solid fa-heart-pulse"></i>
+
+    </div>
+
+    <h2>
+        Ready for Analysis
+    </h2>
+
+    <p>
+        Enter the patient's health information and click
+        <strong>Analyze Heart Risk</strong>
+        to generate an AI-powered assessment.
+    </p>
+
+
+    <div class="empty-features">
+
+        <div>
+            <i class="fa-solid fa-shield-heart"></i>
+            <span>AI Powered</span>
+        </div>
+
+        <div>
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Risk Analysis</span>
+        </div>
+
+        <div>
+            <i class="fa-solid fa-lock"></i>
+            <span>Private</span>
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<!-- =========================================================
+     AI ASSISTANT
+========================================================= -->
+
+
+
+
+
+</div><!-- /.dashboard-right -->
+
+</section>
+
+
+<!-- =========================================================
+     AI ASSISTANT — FULL WIDTH
+========================================================= -->
+
+<section class="card ai-assistant">
+
+    <div class="card-header">
+
+        <div class="header-icon">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+
+        <div>
+
+            <h2>
+                AI Health Assistant
+            </h2>
+
+            <p>
+                Ask questions about your risk assessment
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="assistant-box">
+
+
+        <!-- CHAT HISTORY -->
+
+        <div
+            id="chatHistory"
+            class="chat-history"
+        >
+
+            <!-- Welcome -->
+
+            <div class="chat-message ai-message">
+
+                <div class="message-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+
+                <div class="message-content">
+
+                    <strong>
+                        MediRisk AI
+                    </strong>
+
+                    <p>
+                        Hello! I can help explain your risk assessment
+                        and health parameters in simple language.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUICK QUESTIONS -->
+
+        <div class="quick-questions">
+            <button type="button" onclick="askQuestion('Why is my risk high?')"><i class="fa-solid fa-chart-line"></i><span>Why this risk?</span></button>
+            <button type="button" onclick="askQuestion('Explain my prediction')"><i class="fa-solid fa-brain"></i><span>Explain prediction</span></button>
+            <button type="button" onclick="askQuestion('What are the key factors affecting my result?')"><i class="fa-solid fa-list-check"></i><span>Key factors</span></button>
+            <button type="button" onclick="askQuestion('What does my cholesterol value mean?')"><i class="fa-solid fa-droplet"></i><span>Cholesterol</span></button>
+            <button type="button" onclick="askQuestion('Give me 3 practical next steps based on this assessment')"><i class="fa-solid fa-route"></i><span>3 next steps</span></button>
+            <button type="button" onclick="askQuestion('What questions should I ask my doctor about this result?')"><i class="fa-solid fa-user-doctor"></i><span>Doctor questions</span></button>
+        </div>
+
+
+        <!-- AI INPUT -->
+
+        <div class="assistant-input">
+
+            <input
+                type="text"
+                id="aiQuestion"
+                placeholder="Ask MediRisk AI..."
+                autocomplete="off"
+            >
+
+            <button
+                type="button"
+                onclick="askAI()"
+                aria-label="Send question"
+            >
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     EXPLAINABLE AI FACTOR MODAL
+========================================================= -->
+<div id="factorModal" class="mr-modal" onclick="if(event.target===this) closeFactorInfo()">
+    <div class="mr-modal-box">
+        <div class="mr-modal-top">
+            <div><h3 id="factorTitle">Model Factor</h3><span id="factorImpact" class="mr-impact">Model importance</span></div>
+            <button type="button" onclick="closeFactorInfo()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <p id="factorDescription">This factor was considered by the trained Random Forest model when generating the assessment.</p>
+        <div class="mr-modal-value">Entered value: <strong id="factorValue">—</strong></div>
+    </div>
+</div>
+
+<!-- =========================================================
+     DISCLAIMER
+========================================================= -->
+
+<section class="disclaimer">
+
+    <div class="disclaimer-icon">
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+    </div>
+
+    <div>
+
+        <strong>
+            Important Medical Disclaimer
+        </strong>
+
+        <p>
+            MediRisk AI is an educational and research-oriented
+            machine learning application. Its predictions are
+            not medical diagnoses and should not replace professional
+            medical advice, diagnosis, or treatment.
+        </p>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-content">
+
+        <div class="footer-brand">
+
+            <i class="fa-solid fa-heart-pulse"></i>
+
+            <span>
+                MediRisk AI
+            </span>
+
+        </div>
+
+        <p>
+            AI-powered heart disease risk assessment
+        </p>
+
+        <span class="footer-copy">
+            © 2026 MediRisk AI
+        </span>
+
+    </div>
+
+</footer>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+/* =========================================================
+   QUICK QUESTION
+========================================================= */
+
+function askQuestion(question) {
+
+    const input = document.getElementById("aiQuestion");
+
+    input.value = question;
+
+    askAI();
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(text) {
+
+    return String(text)
+
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   AI RESPONSE FORMATTER
+========================================================= */
+
+function formatAIResponse(text) {
+
+    let formatted = escapeHTML(text || "");
+
+    formatted = formatted.replace(/\r\n/g, "\n");
+
+
+    /* Markdown headings */
+
+    formatted = formatted.replace(
+        /^###\s+(.*)$/gm,
+        "<strong>$1</strong>"
+    );
+
+    formatted = formatted.replace(
+        /^##\s+(.*)$/gm,
+        "<strong>$1</strong>"
+    );
+
+    formatted = formatted.replace(
+        /^#\s+(.*)$/gm,
+        "<strong>$1</strong>"
+    );
+
+
+    /* Bold */
+
+    formatted = formatted.replace(
+        /\*\*(.*?)\*\*/g,
+        "<strong>$1</strong>"
+    );
+
+
+    /* Bullet points */
+
+    formatted = formatted.replace(
+        /^\*\s+(.*)$/gm,
+        "• $1"
+    );
+
+    formatted = formatted.replace(
+        /^-\s+(.*)$/gm,
+        "• $1"
+    );
+
+
+    /* New lines */
+
+    formatted = formatted.replace(
+        /\n/g,
+        "<br>"
+    );
+
+
+    return formatted;
+}
+
+
+/* =========================================================
+   AI ASSISTANT
+========================================================= */
+
+async function askAI() {
+
+    const input =
+        document.getElementById("aiQuestion");
+
+    const chatHistory =
+        document.getElementById("chatHistory");
+
+    const question =
+        input.value.trim();
+
+
+    if (!question) {
+
+        input.focus();
+
+        return;
+    }
+
+
+    /* Disable input */
+
+    input.disabled = true;
+
+
+    /* =====================================================
+       USER MESSAGE
+    ===================================================== */
+
+    const userMessage =
+        document.createElement("div");
+
+    userMessage.className =
+        "chat-message user-message";
+
+    userMessage.innerHTML = `
+
+        <div class="message-avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+
+        <div class="message-content">
+
+            <strong>
+                You
+            </strong>
+
+            <p>
+                ${escapeHTML(question)}
+            </p>
+
+        </div>
+    `;
+
+    chatHistory.appendChild(userMessage);
+
+
+    /* Clear input */
+
+    input.value = "";
+
+
+    /* Scroll */
+
+    chatHistory.scrollTop =
+        chatHistory.scrollHeight;
+
+
+    /* =====================================================
+       THINKING MESSAGE
+    ===================================================== */
+
+    const thinkingMessage =
+        document.createElement("div");
+
+    thinkingMessage.className =
+        "chat-message ai-message";
+
+    thinkingMessage.innerHTML = `
+
+        <div class="message-avatar">
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+        </div>
+
+        <div class="message-content">
+
+            <strong>
+                MediRisk AI
+            </strong>
+
+            <p class="thinking-text">
+
+                Thinking
+
+                <span class="thinking-dots">
+
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+
+                </span>
+
+            </p>
+
+        </div>
+    `;
+
+    chatHistory.appendChild(thinkingMessage);
+
+
+    chatHistory.scrollTop =
+        chatHistory.scrollHeight;
+
+
+    try {
+
+
+        /* =================================================
+           SEND QUESTION TO FLASK
+        ================================================= */
+
+        const response =
+            await fetch(
+                "/ask-ai",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        question: question
+                    })
+                }
+            );
+
+
+        /* JSON */
+
+        const data =
+            await response.json();
+
+
+        /* =================================================
+           AI RESPONSE
+        ================================================= */
+
+        if (data.answer) {
+
+            const avatar =
+                thinkingMessage.querySelector(
+                    ".message-avatar"
+                );
+
+            const content =
+                thinkingMessage.querySelector(
+                    ".message-content"
+                );
+
+
+            avatar.innerHTML =
+                `<i class="fa-solid fa-robot"></i>`;
+
+
+            content.innerHTML = `
+
+                <strong>
+                    MediRisk AI
+                </strong>
+
+                <div class="typing-response"></div>
+            `;
+
+
+            const typingElement =
+                content.querySelector(
+                    ".typing-response"
+                );
+
+
+            await typeAIResponse(
+                data.answer,
+                typingElement
+            );
+
+
+        } else {
+
+            thinkingMessage.innerHTML = `
+
+                <div class="message-avatar">
+
+                    <i class="fa-solid fa-circle-exclamation"></i>
+
+                </div>
+
+                <div class="message-content">
+
+                    <strong>
+                        MediRisk AI
+                    </strong>
+
+                    <p>
+                        Sorry, I couldn't generate a response.
+                    </p>
+
+                </div>
+            `;
+        }
+
+
+    } catch (error) {
+
+
+        console.error(
+            "AI Assistant Error:",
+            error
+        );
+
+
+        thinkingMessage.innerHTML = `
+
+            <div class="message-avatar">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            </div>
+
+            <div class="message-content">
+
+                <strong>
+                    Connection Error
+                </strong>
+
+                <p>
+                    Unable to connect to AI Assistant.
+                    Please try again.
+                </p>
+
+            </div>
+        `;
+    }
+
+
+    /* Enable input */
+
+    input.disabled = false;
+
+    input.focus();
+
+
+    chatHistory.scrollTop =
+        chatHistory.scrollHeight;
+}
+
+
+/* =========================================================
+   AI TYPING ANIMATION
+
+   Markdown is formatted BEFORE typing so ### never appears.
+========================================================= */
+
+async function typeAIResponse(text, element) {
+
+    const cleanText =
+        String(text || "");
+
+
+    /* Convert Markdown */
+
+    const formattedHTML =
+        formatAIResponse(cleanText);
+
+
+    /* Temporary element */
+
+    const temp =
+        document.createElement("div");
+
+    temp.innerHTML =
+        formattedHTML;
+
+
+    const typingText =
+        temp.textContent ||
+        temp.innerText ||
+        "";
+
+
+    element.textContent = "";
+
+
+    /* Typing animation */
+
+    for (
+        let i = 0;
+        i < typingText.length;
+        i++
+    ) {
+
+        element.textContent +=
+            typingText[i];
+
+
+        if (i % 2 === 0) {
+
+            const chatHistory =
+                document.getElementById(
+                    "chatHistory"
+                );
+
+            chatHistory.scrollTop =
+                chatHistory.scrollHeight;
+        }
+
+
+        await sleep(8);
+    }
+
+
+    /* Final formatted response */
+
+    element.innerHTML =
+        formattedHTML;
+
+
+    const chatHistory =
+        document.getElementById(
+            "chatHistory"
+        );
+
+
+    chatHistory.scrollTop =
+        chatHistory.scrollHeight;
+
+
+    /* Cursor */
+
+    const cursor =
+        document.createElement("span");
+
+    cursor.className =
+        "ai-typing-cursor";
+
+    cursor.textContent =
+        "▋";
+
+
+    element.appendChild(cursor);
+
+
+    setTimeout(
+        () => {
+
+            if (cursor) {
+
+                cursor.remove();
+
+            }
+
+        },
+        1500
+    );
+}
+
+
+/* =========================================================
+   SLEEP
+========================================================= */
+
+function sleep(ms) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+}
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+document
+    .getElementById("aiQuestion")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
+
+                event.preventDefault();
+
+                askAI();
+            }
+
+        }
+    );
+
+
+
+/* =========================================================
+   EXPLAINABLE AI FACTORS
+========================================================= */
+const factorNames = {
+    age: "Age", sex: "Sex", cp: "Chest Pain Type", trestbps: "Resting Blood Pressure",
+    chol: "Cholesterol", fbs: "Fasting Blood Sugar", restecg: "Resting ECG",
+    thalach: "Maximum Heart Rate", exang: "Exercise Angina", oldpeak: "ST Depression",
+    slope: "ST Segment Slope", ca: "Major Blood Vessels", thal: "Thalassemia"
+};
+function openFactorInfo(key, importance, value){
+    const title = factorNames[key] || key;
+    const impact = parseFloat(importance) >= 10 ? "Higher model influence" : (parseFloat(importance) >= 5 ? "Medium model influence" : "Lower model influence");
+    document.getElementById('factorTitle').textContent = title;
+    document.getElementById('factorImpact').textContent = impact + " · " + importance + "%";
+    document.getElementById('factorValue').textContent = value || 'Not available';
+    document.getElementById('factorDescription').textContent = 'Your entered ' + title.toLowerCase() + ' value was considered by the trained Random Forest model when generating this assessment. This is model feature importance, not a patient-specific causal contribution or medical diagnosis.';
+    document.getElementById('factorModal').classList.add('open');
+}
+function closeFactorInfo(){ document.getElementById('factorModal').classList.remove('open'); }
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeFactorInfo(); });
+
+/* =========================================================
+   RISK HISTORY TREND CHART
+========================================================= */
+(function drawRiskTrend(){
+    const svg = document.getElementById('mrRiskTrend');
+    if(!svg) return;
+    const values = [
+        {% for item in history[:8]|reverse %}{{ item.disease_probability|float }}{% if not loop.last %},{% endif %}{% endfor %}
+    ];
+    if(values.length < 2) return;
+    const W=420,H=120,padX=18,padY=16;
+    const min=Math.max(0, Math.min(...values)-8), max=Math.min(100, Math.max(...values)+8);
+    const range=(max-min)||1;
+    const pts=values.map((v,i)=>({x:padX+(i*(W-padX*2)/(values.length-1)),y:H-padY-((v-min)/range)*(H-padY*2),v}));
+    svg.innerHTML='';
+    [20,60,100].forEach(y=>{const yy=H-y; const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',padX);line.setAttribute('x2',W-padX);line.setAttribute('y1',yy);line.setAttribute('y2',yy);line.setAttribute('class','mr-trend-grid');svg.appendChild(line);});
+    const poly=document.createElementNS('http://www.w3.org/2000/svg','polyline');poly.setAttribute('points',pts.map(p=>p.x+','+p.y).join(' '));poly.setAttribute('class','mr-trend-line');svg.appendChild(poly);
+    pts.forEach((p,i)=>{const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r',i===pts.length-1?5:3.5);c.setAttribute('class','mr-trend-dot');svg.appendChild(c); if(i===0 || i===pts.length-1){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',p.x);t.setAttribute('y',Math.max(12,p.y-9));t.setAttribute('text-anchor',i===0?'start':(i===pts.length-1?'end':'middle'));t.setAttribute('class','mr-trend-label');t.textContent=p.v.toFixed(1)+'%';svg.appendChild(t);}});
+})();
+
+/* =========================================================
+   WHAT-IF SIMULATOR
+========================================================= */
+async function runWhatIf(){
+    const btn = document.querySelector('.mr-sim-btn');
+    const output = document.getElementById('simScenarioRisk');
+    const changeOutput = document.getElementById('simChange');
+    if(!btn || !output) return;
+    btn.disabled = true;
+    output.textContent = '...';
+    changeOutput.textContent = '...';
+    try{
+        const response = await fetch('/simulate', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({
+                chol: Number(document.getElementById('simChol').value),
+                trestbps: Number(document.getElementById('simBp').value),
+                thalach: Number(document.getElementById('simHr').value)
+            })
+        });
+        const data = await response.json();
+        if(!response.ok) throw new Error(data.error || 'Simulation failed');
+        output.textContent = data.scenario_risk.toFixed(2) + '%';
+        const delta = Number(data.change);
+        changeOutput.textContent = (delta < 0 ? '↓ ' : delta > 0 ? '↑ ' : '') + Math.abs(delta).toFixed(2) + '%';
+        changeOutput.style.color = delta < 0 ? '#4ade80' : delta > 0 ? '#fb7185' : '#c4b5fd';
+    }catch(err){
+        output.textContent = 'Error';
+        changeOutput.textContent = err.message;
+    }finally{ btn.disabled = false; }
+}
+
+/* =========================================================
+   BMI AUTO CALCULATION
+========================================================= */
+
+const heightInput = document.querySelector('input[name="height_cm"]');
+const weightInput = document.getElementById('weightInput');
+const bmiDisplay = document.getElementById('bmiDisplay');
+
+function updateBMI() {
+    const height = parseFloat(heightInput?.value);
+    const weight = parseFloat(weightInput?.value);
+    if (height > 0 && weight > 0) {
+        const heightM = height / 100;
+        bmiDisplay.value = (weight / (heightM * heightM)).toFixed(2);
+    }
+}
+
+
+
+heightInput?.addEventListener('input', updateBMI);
+weightInput?.addEventListener('input', updateBMI);
+updateBMI();
+
+</script>
+
+</body>
+
+</html>
+
