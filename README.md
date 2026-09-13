@@ -2,11 +2,11 @@
 
 ### AI-Powered Heart Disease Risk Prediction System
 
-MediRisk AI is a machine learning-based web application designed to estimate a patient's potential heart disease risk using clinical health parameters.
+MediRisk AI is a machine learning-based web application designed to estimate potential heart disease risk using clinical health parameters.
 
-The system analyzes patient information using a trained Machine Learning model and provides a risk prediction along with probability scores, important risk factors, and an AI-powered health assistant.
+The system analyzes patient information using trained Machine Learning models and provides risk predictions, probability scores, risk classification, important contributing factors, health insights, and an AI-powered health assistant.
 
-> ⚠️ This project is for educational and demonstration purposes only. It is not a substitute for professional medical diagnosis or treatment.
+> ⚠️ **Medical Disclaimer:** This project is developed for educational and demonstration purposes only. It is not a medical diagnostic system and should not be used as a substitute for professional medical advice, diagnosis, or treatment.
 
 ---
 
@@ -15,11 +15,16 @@ The system analyzes patient information using a trained Machine Learning model a
 - 🫀 Heart Disease Risk Prediction
 - 📊 Risk Probability Analysis
 - 🎯 Low / Moderate / High Risk Classification
+- 💯 Health Score
 - 📈 Top Risk Factors using Feature Importance
+- 🔬 What-If Risk Simulator
+- 📋 Assessment Summary
+- 📈 Risk History
+- 💡 Personalized Recommendations
 - 🤖 AI Health Assistant
 - 💬 Interactive Chat Interface
-- 📄 Downloadable Medical Risk Report
-- 🔐 Environment Variable Based API Key Protection
+- 📄 Downloadable PDF Risk Report
+- 🔐 Environment Variable-Based API Key Protection
 - 📱 Responsive Web Interface
 - ✨ Modern UI with Animations
 - ⚡ Fast Flask Backend
@@ -28,7 +33,7 @@ The system analyzes patient information using a trained Machine Learning model a
 
 ## 🧠 Machine Learning
 
-The project uses multiple Machine Learning algorithms and compares their performance.
+The project evaluates multiple Machine Learning algorithms and compares their performance to select the most suitable model.
 
 ### Models Tested
 
@@ -37,17 +42,17 @@ The project uses multiple Machine Learning algorithms and compares their perform
 - Random Forest
 - XGBoost
 
-### Best Performing Model
+### 🏆 Best Performing Model
 
-**Random Forest**
+**Random Forest Classifier**
 
 | Metric | Score |
 |---|---:|
-| Accuracy | 86.67% |
-| Precision | 88.46% |
-| Recall | 82.14% |
-| F1 Score | 85.19% |
-| ROC-AUC | 94.20% |
+| Accuracy | **86.67%** |
+| Precision | **88.46%** |
+| Recall | **82.14%** |
+| F1 Score | **85.19%** |
+| ROC-AUC | **94.20%** |
 
 The Random Forest model is used as the final prediction model.
 
@@ -59,27 +64,34 @@ The project uses the **UCI Heart Disease Dataset (Cleveland)**.
 
 ### Dataset Information
 
-- Total original records: **303**
-- Records after removing missing values: **297**
-- Features: **13**
-- Target: **Heart Disease**
-- Classes:
-  - `0` → No Heart Disease
-  - `1` → Potential Heart Disease
+- **Original records:** 303
+- **Records after removing missing values:** 297
+- **Input features:** 13
+- **Target:** Heart Disease
+- **Classification:** Binary
 
-### Input Features
+### Target Classes
+
+| Value | Meaning |
+|---|---|
+| `0` | No Heart Disease |
+| `1` | Potential Heart Disease |
+
+---
+
+## 📥 Input Features
 
 | Feature | Description |
 |---|---|
 | Age | Patient age |
-| Sex | Gender |
+| Sex | Patient sex |
 | CP | Chest pain type |
 | Trestbps | Resting blood pressure |
-| Chol | Cholesterol |
+| Chol | Serum cholesterol |
 | FBS | Fasting blood sugar |
-| Restecg | Resting ECG |
-| Thalach | Maximum heart rate |
-| Exang | Exercise induced angina |
+| Restecg | Resting ECG result |
+| Thalach | Maximum heart rate achieved |
+| Exang | Exercise-induced angina |
 | Oldpeak | ST depression |
 | Slope | ST segment slope |
 | CA | Number of major vessels |
@@ -90,63 +102,95 @@ The project uses the **UCI Heart Disease Dataset (Cleveland)**.
 ## 🛠️ Technologies Used
 
 ### Frontend
+
 - HTML5
 - CSS3
 - JavaScript
 - Font Awesome
 
 ### Backend
+
 - Python
 - Flask
 
 ### Machine Learning
+
 - Scikit-learn
 - XGBoost
 - NumPy
 - Pandas
 - Joblib
 
-### AI
+### Artificial Intelligence
+
 - OpenAI API
 
 ### Reporting
+
 - ReportLab
 
 ---
 
-## 📁 Project Structure
+## 🎨 Professional UI
 
-```text
-MediRisk_AI/
-│
-├── dataset/
-│   └── heart.csv
-│
-├── static/
-│   └── style.css
-│
-├── templates/
-│   └── index.html
-│
-├── app.py
-├── train.py
-├── predict.py
-├── best_model.pkl
-├── scaler.pkl
-├── requirements.txt
-├── .gitignore
-└── README.md
+MediRisk AI includes a modern, responsive, portfolio-focused healthcare interface featuring:
 
-## Professional UI
-
-MediRisk AI uses a responsive, portfolio-focused interface with:
 - Premium dark medical/AI visual design
 - Responsive patient assessment form
 - BMI auto-calculation
-- Risk probability and health-score presentation
-- Feature-importance explanation
-- AI health assistant
+- Risk probability visualization
+- Health score presentation
+- Feature importance and explainable insights
+- Personalized recommendations
+- What-If risk simulation
+- Risk history and trend visualization
+- Assessment summary
+- AI Health Assistant
+- Interactive chat interface
 - Downloadable PDF assessment report
-- Mobile-friendly layouts
+- Mobile-friendly responsive layouts
 
-> This project is for educational/demo purposes and is not a medical diagnostic system.
+---
+
+## 🤖 AI Health Assistant
+
+The integrated AI Health Assistant helps users understand their assessment results in simple language.
+
+It can provide educational explanations about:
+
+- Risk prediction
+- Important risk factors
+- Health parameters
+- Cholesterol
+- Assessment results
+- Practical next steps
+- Questions to discuss with a healthcare professional
+
+The AI assistant does not provide medical diagnosis or prescribe medication.
+
+---
+
+## 📈 Explainable AI
+
+MediRisk AI is designed to provide more than a simple prediction.
+
+The application displays important model factors that contribute to the prediction, helping users understand which clinical parameters have greater influence on the model's result.
+
+This demonstrates the practical application of **Explainable AI (XAI)** in a healthcare-oriented Machine Learning project.
+
+---
+
+## 🔬 What-If Simulator
+
+The What-If Simulator allows users to modify selected health parameters and observe how the model's prediction changes.
+
+```text
+Current Assessment
+        ↓
+Modify Health Parameter
+        ↓
+Run Simulation
+        ↓
+Model Prediction
+        ↓
+Compare Results
